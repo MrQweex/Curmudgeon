@@ -124,6 +124,7 @@ void SoundButton::releaseKey()
 
 void SoundButton::playingFinished(){
     std::cout << "Playing Finished" << std::endl;
+    player->seek(0);
     turnOff();
 }
 

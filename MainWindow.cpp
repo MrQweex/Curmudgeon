@@ -35,7 +35,7 @@ void MainWindow::AddSoundboard(SoundBoard *newTab)
 }
 
 #include <iostream>
-void MainWindow::keyPressEvents(QKeyEvent * e)
+void MainWindow::keyPressEvent(QKeyEvent * e)
 {
     e->accept();
     SoundBoard* current = (SoundBoard*)the_tabs->currentWidget();
@@ -43,7 +43,7 @@ void MainWindow::keyPressEvents(QKeyEvent * e)
         (current)->pressKey(QChar(e->key()));
 }
 
-void MainWindow::keyReleaseEvents(QKeyEvent * e)
+void MainWindow::keyReleaseEvent(QKeyEvent * e)
 {
     SoundBoard* current = (SoundBoard*)the_tabs->currentWidget();
     if(typeid(*current)==typeid(SoundBoard))
@@ -92,6 +92,7 @@ void MainWindow::closeSoundboard(int index)
     the_tabs->removeTab(index);
     if(the_tabs->count()==0)
         newSoundboard();
+    soundboards.remove(index);
 }
 
 #include <QMessageBox>

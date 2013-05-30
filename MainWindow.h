@@ -29,8 +29,8 @@ private:
     Ui::MainWindow *ui;
     QVector<SoundBoard*> soundboards;
     QTabWidget* the_tabs;
-    void keyPressEvents(QKeyEvent *);
-    void keyReleaseEvents(QKeyEvent *);
+    void keyPressEvent(QKeyEvent *);
+    void keyReleaseEvent(QKeyEvent *);
     VersionDialog* m_versionDialog;
 
 public slots:
