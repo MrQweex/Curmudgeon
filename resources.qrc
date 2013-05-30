@@ -11,5 +11,6 @@
         <file>images/logo_256.png</file>
         <file>images/logo_512.png</file>
         <file>images/logo.icns</file>
+        <file>images/logo.ico</file>
     </qresource>
 </RCC>

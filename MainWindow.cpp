@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <QAction>
+#include <typeinfo> //Needed for if(typeid(...)==typeid(...))
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -56,8 +57,12 @@ void MainWindow::newSoundboard()
 void MainWindow::openSoundboard()
 {
 }
-void MainWindow::closeSoundboard()
+void MainWindow::closeSoundboard(int index)
 {
+    std::cout << "CLSOE " << index << std::endl;
+    the_tabs->removeTab(index);
+    if(the_tabs->count()==0)
+        newSoundboard();
 }
 
 #include <QMessageBox>
@@ -76,6 +81,8 @@ void MainWindow::showAbout()
     m_versionDialog->show();
     //*/
 }
+
+
 
 /*TODO:
  *  -SoundButon:

@@ -28,7 +28,7 @@ void SoundButton::init()
 {
     layout = new QGridLayout();
     name = new QLabel(QString(""));
-    id = new QLabel(QString(new QChar(ID)));
+    id = new QLabel(QString(QChar(ID)));
     id->setStyleSheet("border: 1px solid #" + CLR_TXT_DISABLED + "; color: #" + CLR_TXT_DISABLED);
     name->setStyleSheet("background:none;");
     name->setAlignment(Qt::AlignTop);
@@ -43,6 +43,9 @@ void SoundButton::init()
     this->setLayout(layout);
     this->setStyleSheet("background-color: #" + CLR_DISABLED);
     this->setAcceptDrops(true);
+#ifdef _WIN32
+         this->createWinId();
+#endif
 
     player = NULL;
 }
@@ -115,12 +118,9 @@ void SoundButton::releaseKey()
 }
 
 void SoundButton::playingFinished(){
-    turnOff();
     std::cout << "Playing Finished" << std::endl;
-    return;
+    turnOff();
 }
-
-
 
 void SoundButton::dragEnterEvent(QDragEnterEvent *event)
 {
@@ -141,7 +141,7 @@ void SoundButton::dragLeaveEvent(QDragLeaveEvent *event)
         this->setStyleSheet("background-color: #" + CLR_DISABLED);
 }
 
-
+#include <iostream>
 void SoundButton::dropEvent(QDropEvent *event)
 {
     if(event->mimeData()->urls().length()!=1)
@@ -151,6 +151,10 @@ void SoundButton::dropEvent(QDropEvent *event)
     }
 
     QString path = event->mimeData()->urls().first().path();
+#ifdef _WIN32
+    if(path.startsWith("/"))
+        path = path.mid(1);
+#endif
     QFileInfo fileInfo(path);
     QString ext = fileInfo.suffix();
 
@@ -163,16 +167,23 @@ void SoundButton::dropEvent(QDropEvent *event)
         event->ignore();
 }
 
+
 void SoundButton::setMedia(QString newFile)
 {
     player = AudioPlayerFactory::createFromFile(newFile.toStdString().c_str());
-    if(player!=NULL)
+    if(player==NULL)
     {
-         this->setStyleSheet("background-color: #" + CLR_ENABLED);
-         sound_file_path = newFile;
-         QFileInfo fileInfo(sound_file_path);
-         QString qname(fileInfo.baseName());
-         name->setText(qname);
-         player->setFinishListener(this);
+         std::cerr << "ERROR: could not create AudioPlayer for: "  << newFile.toStdString() << std::endl;
+         return;
     }
+    this->setStyleSheet("background-color: #" + CLR_ENABLED);
+    sound_file_path = newFile;
+    QFileInfo fileInfo(sound_file_path);
+    QString qname(fileInfo.baseName());
+    name->setText(qname);
+    player->setFinishListener(this);
+
+#ifdef _WIN32
+     ((AudioPlayerWin*)player)->setFinishListenerHWND(this->winId());
+#endif
 }

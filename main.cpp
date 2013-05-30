@@ -1,10 +1,9 @@
 #include "mainwindow.h"
 #include <QApplication>
 
+/* Testing blogk for SFML
 #include <SFML/Audio.hpp>
-
 //wav, flac, aiff, au, raw, paf, svx, nist, voc, ircam, w64, mat4, mat5 pvf, htk, sds, avr, sd2, caf, wve, mpc2k, rf64
-
 int main2(int argc, char *argv[])
 {
     sf::Music music;
@@ -16,6 +15,7 @@ int main2(int argc, char *argv[])
 
     }
 }
+*/
 
 
 /*

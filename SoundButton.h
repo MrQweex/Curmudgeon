@@ -15,7 +15,7 @@
 #include <QFileDialog>
 #include <QUrl> //Neede for drop
 
-#include <SFML/Audio.hpp>
+//#include <SFML/Audio.hpp>
 #include "AudioPlayer/AudioPlayerFactory.h"
 
 
@@ -35,7 +35,7 @@ private:
     //Path to the sound file
     QString sound_file_path;
     //What this button is; for example, '1', 'a', 'q', etc...
-    QChar ID;
+    //QChar ID;
     //Percentage of volume level
     int volume_level;
     //Is it currently playing?
@@ -53,7 +53,8 @@ private:
 
 
 public:
-    void turnOff() { this->setStyleSheet("background-color: #" + CLR_ENABLED); }
+    QChar ID;
+    void turnOff() { setStyleSheet("background-color: #" + CLR_ENABLED); }
 
     //Called when reading in information from file
     SoundButton(QChar id, QString path, int vol);
@@ -64,7 +65,15 @@ public:
     //Copy Constructor
     SoundButton(SoundButton &s)
     { }
-    ~SoundButton(){}
+    ~SoundButton()
+    {
+        if(player)
+            player->pause();
+        delete layout;
+        delete name;
+        delete id;
+        delete player;
+    }
 
     //Initialize the object
     void init();
@@ -85,6 +94,20 @@ public:
     //Listener inherited from AudioPlayer
     void playingFinished();
 
+protected:
+    bool winEvent( MSG * message, long * result )
+    {
+        switch(message->message)
+        {
+        case 0x03b9:    //MM_MCINOTIFY
+        case 0x01:      //MCI_NOTIFY_SUCCESS
+        case 0x02:      //MCI_NOTIFY_SUPERSEDED
+        case 0x04:      //MCI_NOTIFY_ABORTED
+        case 0x05:      //MCI_NOTIFY_FAILURE
+            this->playingFinished();
+        }
+        return QGroupBox::winEvent(message,result);
+    }
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);

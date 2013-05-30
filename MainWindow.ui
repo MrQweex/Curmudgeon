@@ -60,7 +60,7 @@
      <x>0</x>
      <y>0</y>
      <width>911</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFIle">
@@ -223,11 +223,28 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mainTabs</sender>
+   <signal>tabCloseRequested(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>closeSoundboard(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>454</x>
+     <y>203</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>455</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newSoundboard()</slot>
   <slot>openSoundboard()</slot>
-  <slot>closeSoundboard()</slot>
   <slot>showAbout()</slot>
+  <slot>closeSoundboard(int)</slot>
+  <slot>closeSoundboard()</slot>
  </slots>
 </ui>

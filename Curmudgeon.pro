@@ -19,14 +19,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     SoundButton.cpp \
     SoundBoard.cpp \
-    VersionDialog.cpp
+    VersionDialog.cpp \
+    AudioPlayer/AudioPlayerWin.cpp
 
 HEADERS  += mainwindow.h \
     SoundButton.h \
     Options.h \
     SoundBoard.h \
-    auplay.h \
-    #ffmpeg.h
     AudioPlayer/AudioPlayerCallback.h \
     VersionDialog.h \
     AudioPlayer/AudioPlayer.h \
@@ -39,24 +38,21 @@ FORMS    += mainwindow.ui
 #LIBS += /usr/local/lib/libmpg123.dylib
 
 #ffmpeg
-INCLUDEPATH += include
-LIBS += -Llib
-LIBS += -lavcodec
-LIBS += -lavfilter
-LIBS += -lavformat
-LIBS += -lavutil
-LIBS += -lswscale
+#INCLUDEPATH += include
+#LIBS += -Llib
+#LIBS += -lavcodec
+#LIBS += -lavfilter
+#LIBS += -lavformat
+#LIBS += -lavutil
+#LIBS += -lswscale
 
 #ao
 #INCLUDEPATH += libao/include
 
-#auplay
-LIBS += -framework CoreFoundation
-LIBS += -framework AudioToolbox
 
 #SFML
-LIBS += -framework sfml-audio
-LIBS += -framework sfml-system
+#LIBS += -framework sfml-audio
+#LIBS += -framework sfml-system
 
 RESOURCES += resources.qrc
 
@@ -64,9 +60,15 @@ macx {
     ICON = images/logo.icns
     SOURCES += AudioPlayer/AudioPlayerOsx.cpp
     HEADERS += AudioPlayer/AudioPlayerOsx.h
+    LIBS += -framework CoreFoundation
+    LIBS += -framework AudioToolbox
 }
-win {
+#win32 {
     ICON = images/logo.ico
-}
+    #SOURCES += AudioPlayer/AudioPlayerWin.cpp
+    HEADERS += AudioPlayer/AudioPlayerWin.h
+    LIBS += -lwinmm
+    RC_FILE = winicon.rc
+#}
 
 #QMAKE_CXX = g++

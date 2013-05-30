@@ -31,17 +31,19 @@
 #define VERSIONDIALOG_H
 
 #include <QDialog>
+#include <QString>
+
+const QString versionString = "Curmudgeon 1.0",
+        qtVersion = qVersion(),
+        buildDate = "May 29, 2013",
+        copyrightYear = "2013",
+        copyrightHolder = "Qweex";
 
 class VersionDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit VersionDialog(QWidget *parent);
-    QString versionString = "Curmudgeon 1.0",
-            qtVersion = qVersion(),
-            buildDate = "May 29, 2013",
-            copyrightYear = "2013",
-            copyrightHolder = "Qweex";
 };
 
 

@@ -19,7 +19,12 @@ private:
 
 public:
     explicit SoundBoard(QString name);
-     ~SoundBoard() {};
+     ~SoundBoard()
+    {
+        for(int i=0; i<BUTTON_COUNT; i++)
+            delete buttons[i];
+        delete grid;
+    }
 
 
     SoundButton* getButton(int i);
@@ -29,6 +34,11 @@ public:
     void pressKey(QChar c);
 
     void releaseKey(QChar c);
+
+    void handleCloseTab(int i)
+    {
+
+    }
 };
 
 #endif // SOUNDBOARD_H
