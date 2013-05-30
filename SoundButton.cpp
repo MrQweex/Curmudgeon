@@ -165,7 +165,7 @@ void SoundButton::dropEvent(QDropEvent *event)
 
 void SoundButton::setMedia(QString newFile)
 {
-    player = AudioPlayerOsx::file(newFile.toStdString().c_str());
+    player = AudioPlayerFactory::createFromFile(newFile.toStdString().c_str());
     if(player!=NULL)
     {
          this->setStyleSheet("background-color: #" + CLR_ENABLED);

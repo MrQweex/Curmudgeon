@@ -17,7 +17,6 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-        AudioPlayer/AudioPlayerOsx.cpp \
     SoundButton.cpp \
     SoundBoard.cpp \
     VersionDialog.cpp
@@ -28,10 +27,10 @@ HEADERS  += mainwindow.h \
     SoundBoard.h \
     auplay.h \
     #ffmpeg.h
-    AudioPlayer/AudioPlayer.h \
-    AudioPlayer/AudioPlayerOsx.h \
     AudioPlayer/AudioPlayerCallback.h \
-    VersionDialog.h
+    VersionDialog.h \
+    AudioPlayer/AudioPlayer.h \
+    AudioPlayer/AudioPlayerFactory.h
 
 FORMS    += mainwindow.ui
 
@@ -63,6 +62,8 @@ RESOURCES += resources.qrc
 
 macx {
     ICON = images/logo.icns
+    SOURCES += AudioPlayer/AudioPlayerOsx.cpp
+    HEADERS += AudioPlayer/AudioPlayerOsx.h
 }
 win {
     ICON = images/logo.ico

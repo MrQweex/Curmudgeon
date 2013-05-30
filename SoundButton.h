@@ -16,9 +16,7 @@
 #include <QUrl> //Neede for drop
 
 #include <SFML/Audio.hpp>
-#include "AudioPlayerOsx.h"
-
-#include "AudioPlayerCallback.h"
+#include "AudioPlayer/AudioPlayerFactory.h"
 
 
 class SoundButton :public QGroupBox,  public AudioPlayerCallback
