@@ -36,27 +36,11 @@ private:
 public slots:
     void newSoundboard();
     void openSoundboard();
+    void saveSoundboard();
     void closeSoundboard() { closeSoundboard(the_tabs->currentIndex()); }
     void closeSoundboard(int);
     void showAbout();
 
-protected:
-    bool winEvent ( MSG * message, long * result )
-    {
-        switch(message->message)
-        {
-        case 0x03b9:    //MM_MCINOTIFY
-        case 0x01:      //MCI_NOTIFY_SUCCESS
-        case 0x02:      //MCI_NOTIFY_SUPERSEDED
-        case 0x04:      //MCI_NOTIFY_ABORTED
-        case 0x05:      //MCI_NOTIFY_FAILURE
-            SoundButton* apc = (SoundButton*) the_tabs->find(message->hwnd);
-            apc->playingFinished();
-            break;
-        }
-        //*/
-        return QMainWindow::winEvent(message,result);
-    }
 };
 
 #endif // MAINWINDOW_H

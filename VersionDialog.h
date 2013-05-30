@@ -33,8 +33,7 @@
 #include <QDialog>
 #include <QString>
 
-const QString versionString = "Curmudgeon 1.0",
-        qtVersion = qVersion(),
+static const QString versionString = "Curmudgeon 1.0",
         buildDate = "May 29, 2013",
         copyrightYear = "2013",
         copyrightHolder = "Qweex";

@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     SoundButton.cpp \
     SoundBoard.cpp \
     VersionDialog.cpp \
-    AudioPlayer/AudioPlayerWin.cpp
+    AudioPlayer/AudioPlayerWin.cpp \
+    CIniFile/IniFile.cpp
 
 HEADERS  += mainwindow.h \
     SoundButton.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     AudioPlayer/AudioPlayerCallback.h \
     VersionDialog.h \
     AudioPlayer/AudioPlayer.h \
-    AudioPlayer/AudioPlayerFactory.h
+    AudioPlayer/AudioPlayerFactory.h \
+    CIniFile/IniFile.h
 
 FORMS    += mainwindow.ui
 
@@ -67,7 +69,8 @@ macx {
     ICON = images/logo.ico
     #SOURCES += AudioPlayer/AudioPlayerWin.cpp
     HEADERS += AudioPlayer/AudioPlayerWin.h
-    LIBS += -lwinmm
+    LIBS += -lwinmm \
+            -lrpcrt4
     RC_FILE = winicon.rc
 #}
 

@@ -36,6 +36,7 @@
 
 #include <iostream>
 
+
 VersionDialog::VersionDialog(QWidget *parent)
     : QDialog(parent)
 {

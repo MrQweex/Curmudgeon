@@ -6,6 +6,7 @@
 
 #include <QPushButton>
 #include <QGridLayout>
+#include "CIniFile/IniFile.h"
 
 class SoundBoard : public QWidget{
 public:
@@ -16,16 +17,20 @@ private:
     SoundButton* buttons[BUTTON_COUNT];
     QGridLayout* grid;
     QString name;
+    bool hasBeenModified, virgin;
+    //Path to the ini_file_path
+    QString ini_file_path;
+    void init();
+    void initLower();
 
 public:
-    explicit SoundBoard(QString name);
-     ~SoundBoard()
+    SoundBoard();
+    SoundBoard(QString);
+    ~SoundBoard()
     {
-        for(int i=0; i<BUTTON_COUNT; i++)
-            delete buttons[i];
-        delete grid;
+        for(int i=0; i<BUTTON_COUNT; i++) if(buttons[i]) delete buttons[i];
+        if(grid) delete grid;
     }
-
 
     SoundButton* getButton(int i);
 
@@ -35,10 +40,11 @@ public:
 
     void releaseKey(QChar c);
 
-    void handleCloseTab(int i)
-    {
+    void saveToFile(QString path);
 
-    }
+    void setModified() { hasBeenModified = true; virgin = true;}
+    bool getModified() { return hasBeenModified; }
+    bool isVirgin() { return virgin; }
 };
 
 #endif // SOUNDBOARD_H

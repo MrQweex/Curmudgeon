@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include <QAction>
+#include <QMessageBox>
 #include <typeinfo> //Needed for if(typeid(...)==typeid(...))
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -51,15 +52,43 @@ void MainWindow::keyReleaseEvents(QKeyEvent * e)
 
 void MainWindow::newSoundboard()
 {
-    AddSoundboard(new SoundBoard("New Soundboard"));
+    AddSoundboard(new SoundBoard());
 }
 
 void MainWindow::openSoundboard()
 {
+    QString path = QFileDialog::getOpenFileName(this,"Select file",QString(),"Curmudgeon files (*.crmdgn)");
+    if(path.length()==0)
+        return;
+
+    //If there is a new, blank soundboard open, close it
+    if(the_tabs->count()==1
+            && !soundboards.at(the_tabs->currentIndex())->getModified()
+            && soundboards.at(the_tabs->currentIndex())->isVirgin())
+        the_tabs->removeTab(0);
+
+    AddSoundboard(new SoundBoard(path));
 }
+
+void MainWindow::saveSoundboard()
+{
+    QString fileSelect = QFileDialog::getSaveFileName(this,"Select filename",QString(),"Curmudgeon files (*.crmdgn)");
+    if(fileSelect.length()==0)
+        return;
+    std::cout << fileSelect.toStdString() << std::endl;
+    (soundboards.at(the_tabs->currentIndex()))->saveToFile(fileSelect);
+}
+
 void MainWindow::closeSoundboard(int index)
 {
-    std::cout << "CLSOE " << index << std::endl;
+    if (soundboards.at(index)->getModified())
+    {
+        int userAnswer = QMessageBox::question(this, "Unsaved Soundboard", "Would you like to save before closing?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
+        if(QMessageBox::Yes == userAnswer)
+            saveSoundboard();
+        else if(QMessageBox::Cancel == userAnswer)
+            return;
+    }
     the_tabs->removeTab(index);
     if(the_tabs->count()==0)
         newSoundboard();

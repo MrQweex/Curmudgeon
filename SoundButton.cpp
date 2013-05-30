@@ -11,17 +11,21 @@ const QString
 
 const QString SoundButton::FILETYPES = "(*.wav;*.mp3)";
 
-SoundButton::SoundButton(QChar id, QString path, int vol)
-{
-    ID = id;
-    sound_file_path = path;
-    init();
-}
-
 SoundButton::SoundButton(QChar id)
 {
     ID = id;
     init();
+}
+
+SoundButton::SoundButton(QChar id,
+                         QString path,
+                         int vol
+                         //,doneAction, releaseAction, repressAction
+                         )
+{
+    ID = id;
+    init();
+    setMedia(path);
 }
 
 void SoundButton::init()
@@ -48,6 +52,7 @@ void SoundButton::init()
 #endif
 
     player = NULL;
+    boards_ini_file_path = NULL;
 }
 
 void SoundButton::mousePressEvent(QMouseEvent * event)
@@ -176,14 +181,45 @@ void SoundButton::setMedia(QString newFile)
          std::cerr << "ERROR: could not create AudioPlayer for: "  << newFile.toStdString() << std::endl;
          return;
     }
+    player->setFinishListener(this);
     this->setStyleSheet("background-color: #" + CLR_ENABLED);
     sound_file_path = newFile;
     QFileInfo fileInfo(sound_file_path);
     QString qname(fileInfo.baseName());
     name->setText(qname);
-    player->setFinishListener(this);
 
 #ifdef _WIN32
      ((AudioPlayerWin*)player)->setFinishListenerHWND(this->winId());
+     //((AudioPlayerWin*)player)->setAlias()
 #endif
 }
+
+void SoundButton::saveToFile(QString* filePath)
+{
+    boards_ini_file_path = filePath;
+    const char c[] = { ID.toAscii(), '\0' };
+    if(sound_file_path.length()==0)
+    {
+        CIniFile::DeleteSection(std::string(c),filePath->toStdString());
+        return;
+    }
+    CIniFile::SetValue("path",
+                       sound_file_path.toStdString(),
+                       std::string(c),
+                       filePath->toStdString());
+    saveVolume(filePath);
+    //saveName
+    //saveDoneAction
+    //saveReleaseAction
+    //saveRepressAction
+}
+
+void SoundButton::saveVolume(QString* filePath)
+{
+    const char c[] = { ID.toAscii(), '\0' };
+    CIniFile::SetValue("vol",
+                       QString("%1").arg(this->volume_level).toStdString(),
+                       std::string(c),
+                       filePath->toStdString());
+}
+

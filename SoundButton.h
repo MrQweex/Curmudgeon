@@ -7,16 +7,17 @@
 #include <QGridLayout>
 #include <QString>
 #include <QChar>
-#include <iostream>
 #include <QPalette>
 #include <QShortcut>
 #include <QObject>
 #include <QMouseEvent>
 #include <QFileDialog>
-#include <QUrl> //Neede for drop
+#include <QUrl>
 
-//#include <SFML/Audio.hpp>
+#include <iostream>
+
 #include "AudioPlayer/AudioPlayerFactory.h"
+#include "CIniFile/IniFile.h"
 
 
 class SoundButton :public QGroupBox,  public AudioPlayerCallback
@@ -32,10 +33,8 @@ private:
                   CLR_TXT_DISABLED,
                   CLR_DRAG;
     static const QString FILETYPES;
-    //Path to the sound file
-    QString sound_file_path;
     //What this button is; for example, '1', 'a', 'q', etc...
-    //QChar ID;
+    QChar ID;
     //Percentage of volume level
     int volume_level;
     //Is it currently playing?
@@ -46,33 +45,37 @@ private:
     QLabel* name;
     //The id widget
     QLabel* id;
-    //callback to when track is finished
-    void (SoundButton::*callback)();
     //Audio Player Object
     AudioPlayer* player;
+    //path to the MP3, WAV, etc
+    QString sound_file_path;
+    //Path to the ini_file_path of the soundboard this is associated with
+    QString* boards_ini_file_path;
 
 
 public:
-    QChar ID;
     void turnOff() { setStyleSheet("background-color: #" + CLR_ENABLED); }
-
-    //Called when reading in information from file
-    SoundButton(QChar id, QString path, int vol);
 
     //Basic constructor
     SoundButton(QChar id);
+
+    //Consctuctor for reading in data
+    SoundButton(QChar id,
+                 QString path,
+                 int vol
+                 //,doneAction, releaseAction, repressAction
+                 );
 
     //Copy Constructor
     SoundButton(SoundButton &s)
     { }
     ~SoundButton()
     {
-        if(player)
-            player->pause();
-        delete layout;
-        delete name;
-        delete id;
-        delete player;
+        if(layout) delete layout;
+        if(name) delete name;
+        if(id) delete id;
+        if(player) delete player;
+        if(boards_ini_file_path) delete boards_ini_file_path;
     }
 
     //Initialize the object
@@ -94,22 +97,25 @@ public:
     //Listener inherited from AudioPlayer
     void playingFinished();
 
+    void saveToFile(QString*);
+
+private:
+    void saveVolume(QString* filePath);
+
 protected:
     bool winEvent( MSG * message, long * result )
     {
         switch(message->message)
         {
         case 0x03b9:    //MM_MCINOTIFY
-        case 0x01:      //MCI_NOTIFY_SUCCESS
-        case 0x02:      //MCI_NOTIFY_SUPERSEDED
-        case 0x04:      //MCI_NOTIFY_ABORTED
-        case 0x05:      //MCI_NOTIFY_FAILURE
+        //case 0x01:      //MCI_NOTIFY_SUCCESS
+        //case 0x02:      //MCI_NOTIFY_SUPERSEDED
+        //case 0x04:      //MCI_NOTIFY_ABORTED
+        //case 0x05:      //MCI_NOTIFY_FAILURE
             this->playingFinished();
         }
         return QGroupBox::winEvent(message,result);
     }
-
-protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
