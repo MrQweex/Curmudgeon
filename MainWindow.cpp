@@ -95,6 +95,22 @@ void MainWindow::closeSoundboard(int index)
     soundboards.remove(index);
 }
 
+void MainWindow::nextTab()
+{
+    int i= the_tabs->currentIndex()+1;
+    if(i==the_tabs->count())
+        i=0;
+    the_tabs->setCurrentIndex(i);
+}
+
+void MainWindow::prevTab()
+{
+    int i= the_tabs->currentIndex()-1;
+    if(i<0)
+        i=the_tabs->count()-1;
+    the_tabs->setCurrentIndex(i);
+}
+
 #include <QMessageBox>
 
 void MainWindow::showAbout()

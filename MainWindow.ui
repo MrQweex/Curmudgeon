@@ -85,7 +85,15 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionNext_Soundboard"/>
+    <addaction name="actionPrevious_Soundboard"/>
+   </widget>
    <addaction name="menuFIle"/>
+   <addaction name="menuView"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -146,6 +154,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionNext_Soundboard">
+   <property name="text">
+    <string>Next Soundboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Tab</string>
+   </property>
+  </action>
+  <action name="actionPrevious_Soundboard">
+   <property name="text">
+    <string>Previous Soundboard</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Backtab</string>
    </property>
   </action>
  </widget>
@@ -264,6 +288,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionPrevious_Soundboard</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>prevTab()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>455</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionNext_Soundboard</sender>
+   <signal>activated()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>nextTab()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>455</x>
+     <y>199</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>newSoundboard()</slot>
@@ -272,5 +328,7 @@
   <slot>closeSoundboard(int)</slot>
   <slot>closeSoundboard()</slot>
   <slot>saveSoundboard()</slot>
+  <slot>nextTab()</slot>
+  <slot>prevTab()</slot>
  </slots>
 </ui>
