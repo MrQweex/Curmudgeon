@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "MainWindow.h"
 #include "ui_mainwindow.h"
 #include "SoundButton.h"
 
@@ -7,7 +7,8 @@
 
 #include <QAction>
 #include <QMessageBox>
-#include <typeinfo> //Needed for if(typeid(...)==typeid(...))
+     //Needed for if(typeid(...)==typeid(...))
+#include <typeinfo>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),

@@ -27,7 +27,7 @@
 **
 ****************************************************************************/
 
-#include "versiondialog.h"
+#include "VersionDialog.h"
 
 #include <QDialogButtonBox>
 #include <QGridLayout>

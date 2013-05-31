@@ -16,14 +16,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        MainWindow.cpp \
     SoundButton.cpp \
     SoundBoard.cpp \
     VersionDialog.cpp \
-    AudioPlayer/AudioPlayerWin.cpp \
     CIniFile/IniFile.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += MainWindow.h \
     SoundButton.h \
     Options.h \
     SoundBoard.h \
@@ -34,6 +33,39 @@ HEADERS  += mainwindow.h \
     CIniFile/IniFile.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += resources.qrc
+
+macx {
+    ICON = images/logo.icns
+    SOURCES += AudioPlayer/AudioPlayerOsx.cpp
+    HEADERS += AudioPlayer/AudioPlayerOsx.h
+    LIBS += -framework CoreFoundation
+    LIBS += -framework AudioToolbox
+}
+win32 {
+    ICON = images/logo.ico
+    SOURCES += AudioPlayer/AudioPlayerWin.cpp
+    HEADERS += AudioPlayer/AudioPlayerWin.h
+    LIBS += -lwinmm \
+            -lrpcrt4
+    RC_FILE = winicon.rc
+}
+unix {
+    # On Linux this includes the -dev package of gstreamer.
+    # On Ubuntu-like systems the package is:    libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev
+
+    CONFIG += link_pkgconfig
+    PKGCONFIG += gstreamer-0.10 \
+                 gstreamer-base-0.10 \
+                 #gstreamer-interfaces-0.10 \
+                 gstreamer-audio-0.10
+    #SOURCES += AudioPlayer/AudioPlayerGnu.cpp
+    HEADERS += AudioPlayer/AudioPlayerGnu.h
+}
+
+#QMAKE_CXX = g++  #used for testing g++/Ming on Mac
+
 
 
 #mpg123
@@ -56,22 +88,4 @@ FORMS    += mainwindow.ui
 #LIBS += -framework sfml-audio
 #LIBS += -framework sfml-system
 
-RESOURCES += resources.qrc
 
-macx {
-    ICON = images/logo.icns
-    SOURCES += AudioPlayer/AudioPlayerOsx.cpp
-    HEADERS += AudioPlayer/AudioPlayerOsx.h
-    LIBS += -framework CoreFoundation
-    LIBS += -framework AudioToolbox
-}
-#win32 {
-    ICON = images/logo.ico
-    #SOURCES += AudioPlayer/AudioPlayerWin.cpp
-    HEADERS += AudioPlayer/AudioPlayerWin.h
-    LIBS += -lwinmm \
-            -lrpcrt4
-    RC_FILE = winicon.rc
-#}
-
-#QMAKE_CXX = g++

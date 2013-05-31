@@ -6,7 +6,7 @@
 #include <QLabel>
 #include <QTabWidget>
 #include "SoundBoard.h"
-#include "versiondialog.h"
+#include "VersionDialog.h"
 
 #include <QKeyEvent>
 

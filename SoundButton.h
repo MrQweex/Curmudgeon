@@ -95,7 +95,7 @@ public:
 
 
     //Listener inherited from AudioPlayer
-    void playingFinished();
+    virtual void playingFinished();
 
     void saveToFile(QString*);
 
@@ -103,6 +103,7 @@ private:
     void saveVolume(QString* filePath);
 
 protected:
+#ifdef _WIN32
     bool winEvent( MSG * message, long * result )
     {
         switch(message->message)
@@ -116,6 +117,7 @@ protected:
         }
         return QGroupBox::winEvent(message,result);
     }
+#endif
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
