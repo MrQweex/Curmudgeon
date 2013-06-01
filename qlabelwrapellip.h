@@ -24,7 +24,6 @@ public:
     void setText(const QString &q)
     {
         fullText = q;
-        QLabel::setText(q);
 
         int left, right, top, bottom;
         parentWidget()->getContentsMargins(&left, &top, &right, &bottom);
@@ -35,10 +34,10 @@ public:
         QFontMetrics metrics(font());
         QString ename = q;
 
-        std::cout << metrics.width(fullText) << ">=" << maxWidth << std::endl;
+        std::cout << metrics.width(fullText) << ">=" << maxWidth <<  "  " << this->width() << std::endl;
         if(metrics.width(fullText)>=maxWidth        )// && metrics.height())
         {
-            ename = metrics.elidedText(ename, Qt::ElideRight, maxWidth);
+            //ename = metrics.elidedText(ename, Qt::ElideRight, maxWidth);
         }
         QLabel::setText(ename);
     }

@@ -49,32 +49,6 @@ public:
     void setModified() { hasBeenModified = true; virgin = true;}
     bool getModified() { return hasBeenModified; }
     bool isVirgin() { return virgin; }
-
-    bool derp;
-    void resizeEventt(QResizeEvent* event)
-    {
-        event->ignore();
-        if(!derp)
-            return;
-        derp = false;
-        std::cout << "HEIGHT" << event->size().height() << std::endl;
-        this->setMaximumSize(event->size());
-        this->setFixedSize(event->size());
-        this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        event->accept();
-    }
-
-    bool event(QEvent * e)
-    {
-        if(e->type()==QEvent::Resize)
-        {
-            QResizeEvent* r = (QResizeEvent*)e;
-
-            return false;
-        }
-        else
-            return QWidget::event(e);
-    }
 };
 
 #endif // SOUNDBOARD_H

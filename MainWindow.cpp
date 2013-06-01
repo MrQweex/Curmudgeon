@@ -9,6 +9,7 @@
 #include <QMessageBox>
      //Needed for if(typeid(...)==typeid(...))
 #include <typeinfo>
+#include <QSizeGrip>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -22,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setAcceptDrops(true);
     this->setUnifiedTitleAndToolBarOnMac(true);
     this->setWindowIcon(QIcon());
+    this->setFixedSize(size());
+    this->statusBar()->setSizeGripEnabled(false);
 }
 
 MainWindow::~MainWindow()
