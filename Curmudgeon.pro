@@ -21,7 +21,6 @@ SOURCES += main.cpp\
     SoundBoard.cpp \
     VersionDialog.cpp \
     CIniFile/IniFile.cpp \
-    AudioPlayer/AudioPlayerGnu.cpp
 
 HEADERS  += MainWindow.h \
     SoundButton.h \
@@ -41,15 +40,15 @@ RESOURCES += resources.qrc
 
 macx {
     ICON = images/logo.icns
-    SOURCES += AudioPlayer/AudioPlayerOsx.cpp
-    HEADERS += AudioPlayer/AudioPlayerOsx.h
+    SOURCES += AudioPlayerClass/AudioPlayerOsx.cpp
+    HEADERS += AudioPlayerClass/AudioPlayerOsx.h
     LIBS += -framework CoreFoundation
     LIBS += -framework AudioToolbox
 }
 win32 {
     ICON = images/logo.ico
-    SOURCES += AudioPlayer/AudioPlayerWin.cpp
-    HEADERS += AudioPlayer/AudioPlayerWin.h
+    SOURCES += AudioPlayerClass/AudioPlayerWin.cpp
+    HEADERS += AudioPlayerClass/AudioPlayerWin.h
     LIBS += -lwinmm \
             -lrpcrt4
     RC_FILE = winicon.rc
@@ -63,8 +62,8 @@ unix {
                  gstreamer-base-0.10 \
                  #gstreamer-interfaces-0.10 \
                  gstreamer-audio-0.10
-    #SOURCES += AudioPlayer/AudioPlayerGnu.cpp
-    HEADERS += AudioPlayer/AudioPlayerGnu.h
+    SOURCES += AudioPlayerClass/AudioPlayerGnu.cpp
+    HEADERS += AudioPlayerClass/AudioPlayerGnu.h
 }
 
 #QMAKE_CXX = g++  #used for testing g++/Ming on Mac
