@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>944</width>
-    <height>399</height>
+    <width>942</width>
+    <height>397</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -59,8 +59,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>944</width>
-     <height>23</height>
+     <width>942</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFIle">
@@ -96,14 +96,6 @@
    <addaction name="menuView"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionMinimize">

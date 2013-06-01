@@ -22,7 +22,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("Curmudgeon");
     this->setAcceptDrops(true);
     this->setUnifiedTitleAndToolBarOnMac(true);
+#ifdef __MAC__
     this->setWindowIcon(QIcon());
+#endif
     this->setFixedSize(size());
     this->statusBar()->setSizeGripEnabled(false);
 }
@@ -134,35 +136,6 @@ void MainWindow::showAbout()
 }
 
 
-
-/*TODO:
- *  -SoundButon:
- *      -"Set Label"
- *      -"Change Sound"
- *      -"Remove"
- *      -Volume Slider
- *      -"Stop when done" vs "Loop when done"
- *      -"Stop when released" vs "Continue when released"
- *      -"Restart when re-pressed" vs "Stop when re-pressed"
- *
- *  -SoundBoard:
- *      -Close
- *          -"Are you sure you want to close?
- *      -Save to file
- *
- *  -Menu:
- *      -File
- *          -Open Soundboard
- *          -Save Soundboard
- *      -View
- *          -Next Soundboard
- *          -Previous Soundboard
- *      -Open
- *      -Dock menu?
- *          -qt_mac_set_dock_menu(QMenu *)
- *
- *  -Window: resize
- */
 
 /*Tabs for each different soundboard
  *  -What happens when change tabs? do sounds keep playing?

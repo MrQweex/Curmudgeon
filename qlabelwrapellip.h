@@ -15,7 +15,7 @@ private:
     int maxWidth, maxHeight;
 public:
 
-    QLabelWrapEllip(QString) : maxWidth(0), maxHeight(0)
+    QLabelWrapEllip(QString) : maxWidth(0), maxHeight(0), measured(false)
     {
         QLabel(QString);
     }
@@ -42,25 +42,21 @@ public:
         QLabel::setText(ename);
     }
 
-    void setTextt(const QString &q)
-    {
-        fullText = q;
-
-        int left, right, top, bottom;
-        parentWidget()->getContentsMargins(&left, &top, &right, &bottom);
-        //std::cout << left << " " << right << " " << top << " " << bottom << " _ " << std::endl;
-        maxWidth = this->parentWidget()->width() - left - right;
-        maxHeight = this->parentWidget()->height() - top - bottom;
-        QLabel::setText(q);
-    }
-
+    bool measured;
     void resizeEvent(QResizeEvent* event)
     {
         if(this->text().length()>0)
         std::cout << event->size().width() << "vs" << maxWidth
                   << "  " << this->parentWidget()->width()
                   << " " << this->text().toStdString() <<  std::endl;
-
+        event->accept();
+        if(measured)
+            return;
+        else
+        {
+            setMinimumSize(event->size());
+        }
+        measured=false;
 
         if((maxWidth>0 && event->size().width()>=maxWidth)
                 ||(maxHeight>0 && event->size().height()>maxHeight))
@@ -73,7 +69,6 @@ public:
             QLabel::setText(qname);
         }
 
-        event->accept();
     }
 };
 

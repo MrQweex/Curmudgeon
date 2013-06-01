@@ -22,7 +22,7 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), hasBeenModified(f
     ini_file_path = pathToIniFile;
     name = QFileInfo(ini_file_path).baseName();
 
-    std::string path;
+    std::string path, nick;
     int vol;
 
     for(int i=0; i<BUTTON_COUNT; i++)
@@ -30,9 +30,11 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), hasBeenModified(f
         path = CIniFile::GetValue(std::string("path"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
         if(path.length()>0)
         {
+            //TODO: parse more reliably
             vol = atoi(CIniFile::GetValue("vol", std::string(1,ids[i].toAscii()), ini_file_path.toStdString()).c_str());
+            nick = CIniFile::GetValue(std::string("nick"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
             //,doneAction, releaseAction, repressAction
-            buttons[i] = new SoundButton(ids[i],QString(path.c_str()), vol);
+            buttons[i] = new SoundButton(ids[i],QString(path.c_str()), vol, QString(nick.c_str()));
         } else
             buttons[i] = new SoundButton(ids[i]);
         grid->addWidget(buttons[i],i/8,i%8);

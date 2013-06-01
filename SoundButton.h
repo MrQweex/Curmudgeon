@@ -14,12 +14,16 @@
 #include <QFileDialog>
 #include <QUrl>
 #include <QResizeEvent>
+#include <QSlider>
+#include <QMenu>
+#include <QInputDialog>
 
 #include <iostream>
 
 #include "AudioPlayer/AudioPlayerFactory.h"
 #include "CIniFile/IniFile.h"
 #include "qlabelwrapellip.h"
+#include "QSliderFixedSize.h"
 
 class SoundButton :public QGroupBox,  public AudioPlayerCallback
 {
@@ -30,6 +34,7 @@ private:
                   CLR_DISABLED,
                   CLR_PRESSED,
                   CLR_PLAYING,
+                  CLR_NOT_SET,
                   CLR_TXT_ENABLED,
                   CLR_TXT_DISABLED,
                   CLR_DRAG;
@@ -38,20 +43,24 @@ private:
     QChar ID;
     //Percentage of volume level
     int volume_level;
-    //Is it currently playing?
-    bool is_playing;
     //Layout containing the widgets
     QGridLayout* layout;
     //The name widget
     QLabelWrapEllip* name;
     //The id widget
     QLabel* id;
+    //slider
+    QSliderFixedSize* volume;
     //Audio Player Object
     AudioPlayer* player;
     //path to the MP3, WAV, etc
     QString sound_file_path;
     //Path to the ini_file_path of the soundboard this is associated with
     QString* boards_ini_file_path;
+    //Menu for pressing the ID
+    QMenu* popupMenu;
+    //The nickname
+    QString nickname;
 
 
 public:
@@ -63,7 +72,8 @@ public:
     //Consctuctor for reading in data
     SoundButton(QChar id,
                  QString path,
-                 int vol
+                 int vol,
+                 QString nick
                  //,doneAction, releaseAction, repressAction
                  );
 
@@ -104,6 +114,8 @@ public:
 
 private:
     void saveVolume(QString* filePath);
+    void saveNickname(QString* filePath);
+    bool measured;
 
 protected:
 #ifdef _WIN32
@@ -125,6 +137,12 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
     void setMedia(QString s);
+private slots:
+    void volumeChanged(int);
+    void saveVolume() { if(boards_ini_file_path) saveVolume(boards_ini_file_path); }
+    void rename();
+    void changeSound();
+    void destroy();
 };
 
 #endif // SOUNDBUTTON_H
