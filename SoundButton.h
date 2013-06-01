@@ -13,12 +13,13 @@
 #include <QMouseEvent>
 #include <QFileDialog>
 #include <QUrl>
+#include <QResizeEvent>
 
 #include <iostream>
 
 #include "AudioPlayer/AudioPlayerFactory.h"
 #include "CIniFile/IniFile.h"
-
+#include "qlabelwrapellip.h"
 
 class SoundButton :public QGroupBox,  public AudioPlayerCallback
 {
@@ -42,7 +43,7 @@ private:
     //Layout containing the widgets
     QGridLayout* layout;
     //The name widget
-    QLabel* name;
+    QLabelWrapEllip* name;
     //The id widget
     QLabel* id;
     //Audio Player Object
@@ -77,6 +78,7 @@ public:
         if(player) delete player;
         if(boards_ini_file_path) delete boards_ini_file_path;
     }
+    void resizeEvent(QResizeEvent* event);
 
     //Initialize the object
     void init();
@@ -98,6 +100,7 @@ public:
     virtual void playingFinished();
 
     void saveToFile(QString*);
+
 
 private:
     void saveVolume(QString* filePath);

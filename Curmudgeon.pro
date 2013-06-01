@@ -30,7 +30,8 @@ HEADERS  += MainWindow.h \
     VersionDialog.h \
     AudioPlayer/AudioPlayer.h \
     AudioPlayer/AudioPlayerFactory.h \
-    CIniFile/IniFile.h
+    CIniFile/IniFile.h \
+    qlabelwrapellip.h
 
 FORMS    += mainwindow.ui
 

@@ -46,6 +46,8 @@ void SoundBoard::init()
     grid->setSpacing(20);
     grid->setMargin(10);
     this->setLayout(grid);
+
+    derp = true;
 }
 
 void SoundBoard::initLower()

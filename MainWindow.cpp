@@ -46,6 +46,7 @@ void MainWindow::keyPressEvent(QKeyEvent * e)
 
 void MainWindow::keyReleaseEvent(QKeyEvent * e)
 {
+    e->accept();
     SoundBoard* current = (SoundBoard*)the_tabs->currentWidget();
     if(typeid(*current)==typeid(SoundBoard))
         (current)->releaseKey(QChar(e->key()));

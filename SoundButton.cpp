@@ -9,7 +9,11 @@ const QString
               SoundButton::CLR_TXT_DISABLED = "888",
               SoundButton::CLR_DRAG = "BEE6B8";
 
-const QString SoundButton::FILETYPES = "(*.wav;*.mp3)";
+#ifdef _WIN32 || __MAC__
+const QString SoundButton::FILETYPES = "(*.wav *.mp3)";
+#else
+const QString SoundButton::FILETYPES = "(*.wav *.mp3 *.aif)";
+#endif
 
 SoundButton::SoundButton(QChar id)
 {
@@ -28,10 +32,12 @@ SoundButton::SoundButton(QChar id,
     setMedia(path);
 }
 
+#include <QLayout>
+#include <QSizePolicy>
 void SoundButton::init()
 {
     layout = new QGridLayout();
-    name = new QLabel(QString(""));
+    name = new QLabelWrapEllip(QString(""));
     id = new QLabel(QString(QChar(ID)));
     id->setStyleSheet("border: 1px solid #" + CLR_TXT_DISABLED + "; color: #" + CLR_TXT_DISABLED);
     name->setStyleSheet("background:none;");
@@ -47,12 +53,29 @@ void SoundButton::init()
     this->setLayout(layout);
     this->setStyleSheet("background-color: #" + CLR_DISABLED);
     this->setAcceptDrops(true);
+
 #ifdef _WIN32
          this->createWinId();
 #endif
 
     player = NULL;
     boards_ini_file_path = NULL;
+}
+
+static bool measured = false;
+
+void SoundButton::resizeEvent(QResizeEvent* event)
+{
+    QGroupBox::resizeEvent(event);
+    event->accept();
+
+    if(measured)
+        return;
+    this->setMaximumWidth((int)event->size().width());
+    this->setMaximumHeight((int)event->size().height());
+
+    //name->setMaximumHeight(event->size().height());
+    //name->setMaximumWidth(event->size().width());
 }
 
 void SoundButton::mousePressEvent(QMouseEvent * event)
@@ -124,7 +147,12 @@ void SoundButton::releaseKey()
 
 void SoundButton::playingFinished(){
     std::cout << "Playing Finished" << std::endl;
+
+    //TODO: This needs to be moved inside the APOsx class
+#ifdef __MAC__
     player->seek(0);
+#endif
+
     turnOff();
 }
 
@@ -173,6 +201,7 @@ void SoundButton::dropEvent(QDropEvent *event)
         event->ignore();
 }
 
+#include <QFontMetrics>
 
 void SoundButton::setMedia(QString newFile)
 {
@@ -187,6 +216,7 @@ void SoundButton::setMedia(QString newFile)
     sound_file_path = newFile;
     QFileInfo fileInfo(sound_file_path);
     QString qname(fileInfo.baseName());
+
     name->setText(qname);
 
 #ifdef _WIN32
@@ -194,6 +224,7 @@ void SoundButton::setMedia(QString newFile)
      //((AudioPlayerWin*)player)->setAlias()
 #endif
 }
+
 
 void SoundButton::saveToFile(QString* filePath)
 {
