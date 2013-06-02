@@ -13,4 +13,10 @@
         <file>images/logo.icns</file>
         <file>images/logo.ico</file>
     </qresource>
+    <qresource prefix="/res">
+        <file>images/vol-up.png</file>
+        <file>images/vol-down.png</file>
+        <file>images/r.png</file>
+        <file>images/l.png</file>
+    </qresource>
 </RCC>

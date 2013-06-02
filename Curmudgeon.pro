@@ -21,6 +21,7 @@ SOURCES += main.cpp\
     SoundBoard.cpp \
     VersionDialog.cpp \
     CIniFile/IniFile.cpp \
+    Options.cpp
 
 HEADERS  += MainWindow.h \
     SoundButton.h \
@@ -28,8 +29,8 @@ HEADERS  += MainWindow.h \
     SoundBoard.h \
     AudioPlayer/AudioPlayerCallback.h \
     VersionDialog.h \
-    AudioPlayer/AudioPlayer.h \
-    AudioPlayer/AudioPlayerFactory.h \
+    AudioPlayerClass/AudioPlayer.h \
+    AudioPlayerClass/AudioPlayerFactory.h \
     CIniFile/IniFile.h \
     qlabelwrapellip.h \
     QSliderFixedSize.h
@@ -89,5 +90,8 @@ unix {
 #SFML
 #LIBS += -framework sfml-audio
 #LIBS += -framework sfml-system
+
+OTHER_FILES += \
+    IconNotes.txt
 
 

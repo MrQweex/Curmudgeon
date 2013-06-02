@@ -1,14 +1,13 @@
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
-class Options {
-    //Loop sounds when they complete?
-    bool loop;
-    //Only play when the trigger is pressed?
-    bool remain_depressed;
-    //When pressed again should it stop or restart?
-    enum PressAgainAction { STOP, RESTART };
-    PressAgainAction press_again;
-};
+#include "SoundButton.h"
+
+namespace Options
+{
+    extern SoundButton::_DONE_ACTION defaultDoneAction;
+    extern SoundButton::_RELEASED_ACTION defaultReleasedAction;
+    extern SoundButton::_REPRESSED_ACTION defaultRepressedAction;
+}
 
 #endif // OPTIONS_H

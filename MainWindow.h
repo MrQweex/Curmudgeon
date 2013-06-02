@@ -9,6 +9,8 @@
 #include "VersionDialog.h"
 
 #include <QKeyEvent>
+#include <QMessageBox>
+#include <QApplication>
 
 namespace Ui {
 class MainWindow;
@@ -21,8 +23,14 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
     void AddSoundboard(SoundBoard *sb);
+    void modifiedFile(SoundBoard* x)
+    {
+        the_tabs->setTabText(the_tabs->currentIndex(),
+                             QString("*").append
+                                (the_tabs->tabText(the_tabs->currentIndex()))
+                             );
+    }
 
 private:
     Ui::MainWindow *ui;
@@ -35,12 +43,13 @@ private:
 public slots:
     void newSoundboard();
     void openSoundboard();
-    void saveSoundboard();
+    bool saveSoundboard();  //true if it was saved, false otherwise
     void closeSoundboard() { closeSoundboard(the_tabs->currentIndex()); }
     void closeSoundboard(int);
     void showAbout();
     void nextTab();
     void prevTab();
+    void closeEvent(QCloseEvent *event);
 
 };
 

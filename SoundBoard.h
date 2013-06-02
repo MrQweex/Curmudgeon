@@ -10,9 +10,13 @@
 #include "CIniFile/IniFile.h"
 #include <QSizePolicy>
 #include <QEvent>
-
+#include <QToolTip>
+#include "Options.h"
 
 class SoundBoard : public QWidget{
+
+    Q_OBJECT
+
 public:
     static const int BUTTON_COUNT = 8*3;
     static const QChar ids[BUTTON_COUNT];
@@ -21,11 +25,13 @@ private:
     SoundButton* buttons[BUTTON_COUNT];
     QGridLayout* grid;
     QString name;
-    bool hasBeenModified, virgin;
+    bool virgin;
+    int boardVolume, boardBalance;
     //Path to the ini_file_path
     QString ini_file_path;
     void init();
     void initLower();
+    QSlider *volSlider, *panSlider;
 
 public:
     SoundBoard();
@@ -46,9 +52,17 @@ public:
 
     void saveToFile(QString path);
 
-    void setModified() { hasBeenModified = true; virgin = true;}
-    bool getModified() { return hasBeenModified; }
+    bool getModified()
+    {
+        std::cout << "?" << virgin << "&&" << ini_file_path.toStdString() << std::endl;
+        return !virgin && ini_file_path.length()==0;
+    }
     bool isVirgin() { return virgin; }
+    void breakVirgin();
+
+public slots:
+    void trackVolume(int);
+    void trackBalance(int);
 };
 
 #endif // SOUNDBOARD_H

@@ -20,7 +20,7 @@
 
 #include <iostream>
 
-#include "AudioPlayer/AudioPlayerFactory.h"
+#include "AudioPlayerClass/AudioPlayerFactory.h"
 #include "CIniFile/IniFile.h"
 #include "qlabelwrapellip.h"
 #include "QSliderFixedSize.h"
@@ -43,6 +43,8 @@ private:
     QChar ID;
     //Percentage of volume level
     int volume_level;
+    //Volume of board
+    int* board_volume_level;
     //Layout containing the widgets
     QGridLayout* layout;
     //The name widget
@@ -65,16 +67,24 @@ private:
 
 public:
     void turnOff() { setStyleSheet("background-color: #" + CLR_ENABLED); }
+    enum _DONE_ACTION { DONE_STOP, DONE_LOOP };
+    enum _RELEASED_ACTION { RELEASED_STOP, RELEASED_CONTINUE };
+    enum _REPRESSED_ACTION { REPRESSED_STOP, REPRESSED_RESTART };
 
     //Basic constructor
-    SoundButton(QChar id);
+    SoundButton(int*,QChar id,
+                _DONE_ACTION  doneAction,
+                _RELEASED_ACTION releaseAction,
+                _REPRESSED_ACTION repressAction);
 
     //Consctuctor for reading in data
-    SoundButton(QChar id,
+    SoundButton(int*,QChar id,
                  QString path,
                  int vol,
-                 QString nick
-                 //,doneAction, releaseAction, repressAction
+                 QString nick,
+                 _DONE_ACTION  doneAction,
+                 _RELEASED_ACTION releaseAction,
+                 _REPRESSED_ACTION repressAction
                  );
 
     //Copy Constructor
@@ -111,11 +121,20 @@ public:
 
     void saveToFile(QString*);
 
+    void refreshVolume();
+    void setBalance(int);
 
 private:
     void saveVolume(QString* filePath);
     void saveNickname(QString* filePath);
+    void saveDoneAction(QString* filePath);
+    void saveReleaseAction(QString* filePath);
+    void saveRepressAction(QString* filePath);
     bool measured;
+    _DONE_ACTION doneAction;
+    _RELEASED_ACTION releasedAction;
+    _REPRESSED_ACTION repressedAction;
+    QActionGroup *doneGroup, *releasedGroup, *repressedGroup;
 
 protected:
 #ifdef _WIN32
@@ -137,12 +156,19 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
     void setMedia(QString s);
+
 private slots:
     void volumeChanged(int);
     void saveVolume() { if(boards_ini_file_path) saveVolume(boards_ini_file_path); }
     void rename();
     void changeSound();
     void destroy();
+    void menu_doneStop();
+    void menu_doneLoop();
+    void menu_releasedStop();
+    void menu_releasedContinue();
+    void menu_repressedStop();
+    void menu_repressedRestart();
 };
 
 #endif // SOUNDBUTTON_H
