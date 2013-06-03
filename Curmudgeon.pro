@@ -45,6 +45,8 @@ macx {
     HEADERS += AudioPlayerClass/AudioPlayerOsx.h
     LIBS += -framework CoreFoundation
     LIBS += -framework AudioToolbox
+    CONFIG += static
+    LIBS += -dead_strip
 }
 win32 {
     ICON = images/logo.ico
