@@ -1,0 +1,60 @@
+#!/usr/bin/make -f
+
+icon = $(CURDIR)/images/logo_256.png
+program = $(CURDIR)/Curmudgeon
+launcher = $(CURDIR)/Curmudgeon.desktop
+
+C_DIR = /mnt/Tera/notbryant/Curmudgeon
+DEST = $(CURDIR)/debian/curmudgeon/opt/curmudgeon
+DEST_L = $(CURDIR)/debian/curmudgeon/usr/share/applications
+
+build:
+	cd $(CURDIR)
+	make -w
+
+build-stamp:
+	dh_testdir
+	touch build-stamp
+
+clean:
+	cd $(C_DIR)
+	qmake Curmudgeon.pro -r -spec linux-g++
+	cd $(CURDIR)
+	make clean -w
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp
+	dh_clean
+
+install: build clean $(icon) $(program) $(launcher)
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	
+	mkdir -m 755 -p $(DEST)
+	mkdir -m 755 -p $(DEST_L)
+	
+	install -m 666 $(icon) $(DEST)
+	install -m 777 $(program) $(DEST)
+	install -m 777 $(launcher) $(DEST_L)
+
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+	dh_installman
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary-arch: build install
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

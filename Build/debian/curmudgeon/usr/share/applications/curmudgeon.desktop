@@ -1,0 +1,10 @@
+[Desktop Entry]
+Categories=AudioVideo;Audio;Player;Qt;
+Exec=/opt/curmudgeon/Curmudgeon
+Icon=/opt/curmudgeon/logo_256.png
+Name[en_US]=Curmudgeon
+Name=Curmudgeon
+Terminal=false
+Type=Application
+Version=1.0
+Description=Soundboard audio clip player

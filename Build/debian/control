@@ -1,0 +1,15 @@
+Source: curmudgeon
+Section: Sound
+Priority: extra
+Maintainer: Jon Petraglia <notbryant@gmail.com>
+Build-Depends: debhelper (>= 8.0.0), g++, libgstreamer-plugins-base0.10-dev, libgstreamer0.10-dev
+Standards-Version: 3.9.2
+Homepage: http://curmudgeon-app.com
+Vcs-Git: git://github.com/MrQweex/curmudgeon.git
+Vcs-Browser: https://github.com/MrQweex/curmudgeon
+
+Package: curmudgeon
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-gui, gstreamer0.10-alsa, gstreamer0.10-plugins-base, gstreamer0.10-tools
+Description: Soundboard audio clip player
+Version: 1.0
