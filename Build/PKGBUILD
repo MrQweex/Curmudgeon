@@ -1,0 +1,31 @@
+# Maintainer: MrQweex <mrqweex[at]qweex[dot]com>
+pkgname=curmudgeon
+pkgver=1.0
+pkgrel=1
+pkgdesc="Soundboard audio clip player"
+url="http://www.curmudgeon-app.com"
+arch=('x86_64' 'i686')
+license=('QPLv1')
+depends=('qt4' 'gstreamer-0.10' 'gstreamer0.10-base' 'gstreamer-audio-0.10')
+optdepends=('gstreamer0.10-bad' 'gstreamer0.10-ffmpeg' 'gstreamer0.10-good' 'gstreamer0.10-ugly')
+makedepends('g++' 'libgstreamer-plugins-base0.10-dev' 'libgstreamer0.10-dev')
+source=("Curmudgeon"
+	"curmudgeon.desktop"
+	"LICENSE.QPL")
+md5sums=(''
+	 ''
+	 '')
+    
+build() {
+    qmake ~/Curmudgeon/Curmudgeon.pro -r -spec linux-g++
+    cd $(sed -nr "s/.*BuildDirectory\">(.*)<.*/\1/p" ~/Curmudgeon/Curmudgeon.pro.user | head -1)
+    make -w
+}
+    
+package() {
+    cd "${srcdir}/${pkgname}-${pkgver}"
+    install -Dm666 LICENSE.QPL "/opt/$pkgname/LICENSE.QPL"
+    install -Dm777 Curmudgeon "/opt/$pkgname/Curmudgeon"
+    install -Dm777 curmudgeon.desktop "/usr/share/applications/curmudgeon.desktop"
+}
+
