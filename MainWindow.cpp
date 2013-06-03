@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     the_tabs = this->findChild<QTabWidget*>("mainTabs");
+    the_tabs->setDocumentMode(true);
     the_tabs->removeTab(0);
     this->setWindowTitle("Curmudgeon");
     this->setAcceptDrops(true);
