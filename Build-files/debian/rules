@@ -1,0 +1,38 @@
+#!/usr/bin/make -f
+icon = $(CURDIR)/logo_256.png
+program = $(CURDIR)/Curmudgeon
+launcher = $(CURDIR)/Curmudgeon.desktop
+license = $(CURDIR)/LICENSE.QPL
+DEST_A = $(CURDIR)/debian/curmudgeon/opt/curmudgeon
+DEST_L = $(CURDIR)/debian/curmudgeon/usr/share/applications
+
+install: $(icon) $(program) $(launcher)
+	dh_testdir
+	dh_testroot
+	dh_prep
+	dh_installdirs
+	mkdir -m 755 -p $(DEST_A)
+	mkdir -m 755 -p $(DEST_L)
+	install -m 666 $(icon) $(DEST_A)
+	install -m 666 $(license) $(DEST_A)
+	install -m 777 $(program) $(DEST_A)
+	install -m 777 $(launcher) $(DEST_L)
+
+binary: install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs
+	dh_installdocs
+	dh_installexamples
+	dh_installman
+	dh_link
+	dh_compress
+	dh_fixperms
+	dh_installdeb
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+	
+clean:
+build:
+.PHONY: binary install

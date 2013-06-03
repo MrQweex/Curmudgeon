@@ -27,7 +27,7 @@ HEADERS  += MainWindow.h \
     SoundButton.h \
     Options.h \
     SoundBoard.h \
-    AudioPlayer/AudioPlayerCallback.h \
+    AudioPlayerClass/AudioPlayerCallback.h \
     VersionDialog.h \
     AudioPlayerClass/AudioPlayer.h \
     AudioPlayerClass/AudioPlayerFactory.h \
@@ -65,6 +65,15 @@ unix:!macx {
                  gstreamer-audio-0.10
     SOURCES += AudioPlayerClass/AudioPlayerGnu.cpp
     HEADERS += AudioPlayerClass/AudioPlayerGnu.h
+
+
+    #Install
+    #PREFIX = /opt
+    #BINDIR = $$PREFIX/curmudgeon
+    #DATADIR = $$BINDIR
+
+    #DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\""$$PKGDATADIR\\\"
+    #INSTALLS += target desktop icon26 icon48 icon64
 }
 
 #QMAKE_CXX = g++  #used for testing g++/Ming on Mac

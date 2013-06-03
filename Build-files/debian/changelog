@@ -1,0 +1,5 @@
+curmudgeon (1.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+
+ -- Jon Petraglia <notbryant@gmail.com>  Mon, 03 Jun 2013 01:48:41 -0600
