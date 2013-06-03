@@ -62,6 +62,7 @@ void SoundButton::init()
     id->setStyleSheet("border: 1px solid #" + CLR_TXT_DISABLED + "; color: #" + CLR_TXT_DISABLED);
 
     volume = new QSliderFixedSize();
+    volume->setStyleSheet("background:none;");
     volume->setMaximum(100);
     volume->setEnabled(false);
     connect(volume,SIGNAL(valueChanged(int)),this,SLOT(volumeChanged(int)));
@@ -313,13 +314,6 @@ void SoundButton::releaseKey()
 void SoundButton::playingFinished()
 {
     std::cout << "Playing Finished" << std::endl;
-
-    //TODO: This needs to be moved inside the APOsx class
-#ifdef __APPLE__
-    player->seek(0);
-#endif
-
-    std::cout << doneAction << "==" << DONE_LOOP << std::endl;
     if(doneAction==DONE_LOOP)
         pressKey();
     else

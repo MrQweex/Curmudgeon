@@ -83,38 +83,58 @@ void SoundBoard::initLower()
 {
     QGroupBox* lower = new QGroupBox();
     QGridLayout* g = new QGridLayout();
-    g->setColumnStretch(1,100);
+    g->setColumnStretch(2,100);
     g->setRowStretch(0,1);
     g->setRowStretch(1,1);
     g->setContentsMargins(60,0,60,0);
 
+    //Stop
+    QPushButton* stahp = new QPushButton();
+    stahp->setIcon(QIcon(":/res/images/stop.png"));
+    stahp->setIconSize(QSize(32,32));
+    stahp->setMaximumWidth(64);
+    stahp->setMaximumHeight(64);
+    connect(stahp,SIGNAL(clicked()),this,SLOT(stopAll()));
+    g->addWidget(stahp,0,0,2,1);
+
+
+    //Volume
     volSlider = new QSlider(Qt::Horizontal,lower);
     volSlider->setMaximum(100);
     volSlider->setValue(100);
-    panSlider = new QSlider(Qt::Horizontal,lower);
-    panSlider->setMaximum(100);
-    panSlider->setMinimum(-100);
-    panSlider->setValue(0);
     connect(volSlider,SIGNAL(valueChanged(int)),this,SLOT(trackVolume(int)));
-    connect(panSlider,SIGNAL(valueChanged(int)),this,SLOT(trackBalance(int)));
 
+    //Icons for Volume
     QLabel *down, *up;
     down= new QLabel;
     up=new QLabel;
     down->setPixmap(QPixmap(":res/images/vol-down.png"));
     up->setPixmap(QPixmap(":res/images/vol-up.png"));
-    g->addWidget(down,0,0);
-    g->addWidget(volSlider, 0, 1);
-    g->addWidget(up,0,2);
 
+    //Add Volume
+    g->addWidget(down,0,1);
+    g->addWidget(volSlider, 0, 2);
+    g->addWidget(up,0,3);
+
+    //Pan (Balance)
+    panSlider = new QSlider(Qt::Horizontal,lower);
+    panSlider->setMaximum(100);
+    panSlider->setMinimum(-100);
+    panSlider->setValue(0);
+    connect(panSlider,SIGNAL(valueChanged(int)),this,SLOT(trackBalance(int)));
+
+    //Icons for Pan
     QLabel *l, *r;
     l= new QLabel;
     r=new QLabel;
     l->setPixmap(QPixmap(":res/images/l.png"));
     r->setPixmap(QPixmap(":res/images/r.png"));
-    g->addWidget(l,1,0);
-    g->addWidget(panSlider, 1, 1);
-    g->addWidget(r,1,2);
+
+    //Add Pan
+    g->addWidget(l,1,1);
+    g->addWidget(panSlider, 1, 2);
+    g->addWidget(r,1,3);
+
 
     lower->setLayout(g);
     grid->addWidget(lower,BUTTON_COUNT/8+1,0,1,8);
@@ -209,7 +229,16 @@ void SoundBoard::saveToFile(QString path)
 #include "MainWindow.h"
 void SoundBoard::breakVirgin()
 {
-    std::cout << "DERP2" << std::endl;
+    if(virgin==false)
+        return;
     virgin = false;
     ((MainWindow*)this->window())->modifiedFile(this);
+}
+
+void SoundBoard::stopAll()
+{
+    for(int i=0; i<BUTTON_COUNT; i++)
+    {
+        buttons[i]->stop();
+    }
 }

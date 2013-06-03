@@ -19,5 +19,6 @@
         <file>images/r.png</file>
         <file>images/l.png</file>
         <file>LICENSE.QPL</file>
+        <file>images/stop.png</file>
     </qresource>
 </RCC>

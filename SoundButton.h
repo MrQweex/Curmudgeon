@@ -124,6 +124,16 @@ public:
     void refreshVolume();
     void setBalance(int);
 
+    void stop()
+    {
+        if(player)
+        {
+            player->pause();
+            player->seek(0);
+            this->setStyleSheet("background-color: #" + CLR_ENABLED);
+        }
+    }
+
 private:
     void saveVolume(QString* filePath);
     void saveNickname(QString* filePath);

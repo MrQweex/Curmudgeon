@@ -113,7 +113,6 @@ void VersionDialog::License()
     text->setMinimumSize(
                 qfm.width("The intent of this license is to establish freedom to share and change the")+10,
                 qfm.height()*30);
-    //text->setMinimumSize(500,400);
     text->setReadOnly(true);
 
     //Buttons
@@ -126,7 +125,6 @@ void VersionDialog::License()
     layout->addWidget(text, 4);
     layout->addWidget(buttonBox, 0, Qt::AlignRight);
 
-    //license->setGeometry(300,400,800,600);
     license->setLayout(layout);
     license->show();
 }

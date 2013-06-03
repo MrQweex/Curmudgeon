@@ -63,6 +63,7 @@ public:
 public slots:
     void trackVolume(int);
     void trackBalance(int);
+    void stopAll();
 };
 
 #endif // SOUNDBOARD_H
