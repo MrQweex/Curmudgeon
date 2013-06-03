@@ -18,5 +18,6 @@
         <file>images/vol-down.png</file>
         <file>images/r.png</file>
         <file>images/l.png</file>
+        <file>LICENSE.QPL</file>
     </qresource>
 </RCC>

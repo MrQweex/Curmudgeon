@@ -54,7 +54,7 @@ win32 {
             -lrpcrt4
     RC_FILE = winicon.rc
 }
-unix {
+unix:!macx {
     # On Linux this includes the -dev package of gstreamer.
     # On Ubuntu-like systems the package is:    libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev
 

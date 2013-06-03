@@ -37,8 +37,7 @@
 #include <iostream>
 
 
-VersionDialog::VersionDialog(QWidget *parent)
-    : QDialog(parent)
+VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
 {
     QString iconpath = ":/logo/images/logo_192.png";
 
@@ -59,7 +58,7 @@ VersionDialog::VersionDialog(QWidget *parent)
         "<br/>"
         "Copyright 2013-%6 %7. All rights reserved.<br/>"
         "<br/>"
-        "The program released under the <a href='http://opensource.org/licenses/Zlib'>zlib license</a>.<br/>")
+        "The program released under the <a href='http://opensource.org/licenses/QPL-1.0'>Q Public License</a>.<br/>")
         .arg(versionString,
              QLatin1String(qVersion()),
              QString::number(QSysInfo::WordSize),
@@ -84,4 +83,50 @@ VersionDialog::VersionDialog(QWidget *parent)
     layout->addWidget(copyRightLabel, 0, 1, 4, 4);
     layout->addWidget(buttonBox, 4, 0, 1, 5);
     //*/
+}
+
+#include <QTextEdit>
+#include <QFile>
+#include <QVBoxLayout>
+#include <QFontMetrics>
+
+void VersionDialog::License()
+{
+    QDialog* license = new QDialog();
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setSizeConstraint(QLayout::SetFixedSize);
+
+    //Title
+    QLabel* title = new QLabel("Q Public License 1.0", license);
+    QFont font = title->font();
+    font.setPointSize(20);
+    font.setBold(true);
+    title->setFont(font);
+
+    //Derp
+    QTextEdit* text = new QTextEdit();
+    QFile data(":/res/LICENSE.QPL");
+    data.open(QIODevice::ReadOnly);
+    text->setText(data.readAll());
+    QFontMetrics qfm(text->font());
+    text->setMinimumSize(
+                qfm.width("The intent of this license is to establish freedom to share and change the")+10,
+                qfm.height()*30);
+    //text->setMinimumSize(500,400);
+    text->setReadOnly(true);
+
+    //Buttons
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+    QPushButton *closeButton = buttonBox->button(QDialogButtonBox::Close);
+    buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
+    connect(buttonBox , SIGNAL(rejected()), license, SLOT(reject()));
+
+    layout->addWidget(title);
+    layout->addWidget(text, 4);
+    layout->addWidget(buttonBox, 0, Qt::AlignRight);
+
+    //license->setGeometry(300,400,800,600);
+    license->setLayout(layout);
+    license->show();
 }

@@ -47,6 +47,7 @@ public slots:
     void closeSoundboard() { closeSoundboard(the_tabs->currentIndex()); }
     void closeSoundboard(int);
     void showAbout();
+    void showLicense();
     void nextTab();
     void prevTab();
     void closeEvent(QCloseEvent *event);

@@ -11,7 +11,7 @@ const QString
           SoundButton::CLR_TXT_DISABLED = "888",
           SoundButton::CLR_DRAG = "BEE6B8";
 
-#ifdef _WIN32 || __MAC__
+#ifdef _WIN32 || __APPLE__
 const QString SoundButton::FILETYPES = "(*.wav *.mp3)";
 #else
 const QString SoundButton::FILETYPES = "(*.wav *.mp3 *.aif)";
@@ -315,7 +315,7 @@ void SoundButton::playingFinished()
     std::cout << "Playing Finished" << std::endl;
 
     //TODO: This needs to be moved inside the APOsx class
-#ifdef __MAC__
+#ifdef __APPLE__
     player->seek(0);
 #endif
 

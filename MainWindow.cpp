@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("Curmudgeon");
     this->setAcceptDrops(true);
     this->setUnifiedTitleAndToolBarOnMac(true);
-#ifdef __MAC__
+#ifdef __APPLE__
     this->setWindowIcon(QIcon());
 #endif
     this->setFixedSize(size());
@@ -107,6 +107,11 @@ MainWindow::MainWindow(QWidget *parent) :
             Help->addAction(about);
         }
         {
+            QAction* license = new QAction(tr("License"),Help);
+            connect(license,SIGNAL(triggered()),this,SLOT(showLicense()));
+            Help->addAction(license);
+        }
+        {
             QAction* buy = new QAction(tr("Buy"),Help);
             //connect(zoom,SIGNAL(triggered()),this,SLOT(nextTab()));
             Help->addAction(buy);
@@ -130,9 +135,12 @@ void MainWindow::AddSoundboard(SoundBoard *newTab)
 void MainWindow::keyPressEvent(QKeyEvent * e)
 {
     e->accept();
-    SoundBoard* current = (SoundBoard*)the_tabs->currentWidget();
-    if(typeid(*current)==typeid(SoundBoard))
-        (current)->pressKey(QChar(e->key()));
+    if(!e->isAutoRepeat())
+    {
+        SoundBoard* current = (SoundBoard*)the_tabs->currentWidget();
+        if(typeid(*current)==typeid(SoundBoard))
+            (current)->pressKey(QChar(e->key()));
+    }
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent * e)
@@ -203,8 +211,6 @@ void MainWindow::prevTab()
     the_tabs->setCurrentIndex(i);
 }
 
-#include <QMessageBox>
-
 void MainWindow::showAbout()
 {
     QString title = tr("About Curmudgeon ");
@@ -220,6 +226,10 @@ void MainWindow::showAbout()
     //*/
 }
 
+void MainWindow::showLicense()
+{
+    VersionDialog::License();
+}
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {

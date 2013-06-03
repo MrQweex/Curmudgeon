@@ -43,6 +43,7 @@ class VersionDialog : public QDialog
     Q_OBJECT
 public:
     explicit VersionDialog(QWidget *parent);
+    static void License();
 };
 
 
