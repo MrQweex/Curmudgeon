@@ -48,9 +48,11 @@ public slots:
     void closeSoundboard(int);
     void showAbout();
     void showLicense();
+    void showPreferences() { new Options(this); }
     void nextTab();
     void prevTab();
     void closeEvent(QCloseEvent *event);
+    void openRecentFile(QAction*);
 
 };
 

@@ -1,6 +1,13 @@
 #include "SoundButton.h"
 #include "SoundBoard.h"
 
+#ifdef _WIN32 || __APPLE__
+const QString SoundButton::FILETYPES = "(*.wav *.mp3)";
+#else
+const QString SoundButton::FILETYPES = formatFiletypes(AudioPlayerGnu::FILETYPES, AudioPlayerGnu::FILETYPE_COUNT);
+#endif
+
+
 const QString
           SoundButton::CLR_ENABLED = "ddd",
           SoundButton::CLR_DISABLED = "eee",
@@ -11,11 +18,18 @@ const QString
           SoundButton::CLR_TXT_DISABLED = "888",
           SoundButton::CLR_DRAG = "BEE6B8";
 
-#ifdef _WIN32 || __APPLE__
-const QString SoundButton::FILETYPES = "(*.wav *.mp3)";
-#else
-const QString SoundButton::FILETYPES = "(*.wav *.mp3 *.aif)";
-#endif
+
+QString SoundButton::formatFiletypes(const char* filetypes[], const int &num)
+{
+    QString result = "(";
+    for(int i=0; i<num; i++)
+    {
+        result.append("*.").append(filetypes[i]);
+        if(i!=num-1)
+            result.append(" ");
+    }
+    return result.append(")");
+}
 
 SoundButton::SoundButton(int* bvol, QChar id,
                          _DONE_ACTION  doneAction,
@@ -264,13 +278,10 @@ void SoundButton::mouseReleaseEvent(QMouseEvent * event)
 
 void  SoundButton::changeSound()
 {
-    QString fileSelect = QFileDialog::getOpenFileName(this->window(), tr("Choose sound for: ").append(ID),
-                                                     "",
-                                                      tr("Sounds ").append(FILETYPES));
-   if(fileSelect.length()>0)
-    {
-       setMedia(fileSelect);
-    }
+    QString fileSelect = QFileDialog::getOpenFileName(this->window(), tr("Choose sound for: ").append(ID), "",
+                                                      tr("Sounds ").append(SoundButton::FILETYPES));
+    if(fileSelect.length()>0)
+        setMedia(fileSelect);
 }
 
 void SoundButton::pressKey()
@@ -365,8 +376,6 @@ void SoundButton::dropEvent(QDropEvent *event)
         event->ignore();
 }
 
-#include <QFontMetrics>
-
 void SoundButton::setMedia(QString newFile)
 {
     player = AudioPlayerFactory::createFromFile(newFile.toStdString().c_str());
@@ -375,7 +384,6 @@ void SoundButton::setMedia(QString newFile)
          std::cerr << "ERROR: could not create AudioPlayer for: "  << newFile.toStdString() << std::endl;
          return;
     }
-    player->setFinishListener(this);
     this->setStyleSheet("background-color: #" + CLR_ENABLED);
     sound_file_path = newFile;
     QFileInfo fileInfo(sound_file_path);
@@ -387,9 +395,9 @@ void SoundButton::setMedia(QString newFile)
     }
 
     player->setVolume(volume_level);
+    player->setFinishListener(this);
     volume->setEnabled(true);
 
-    std::cout << "DERP1" << std::endl;
     ((SoundBoard*)this->parentWidget())->breakVirgin();
 
 #ifdef _WIN32

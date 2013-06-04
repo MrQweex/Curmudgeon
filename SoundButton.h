@@ -17,6 +17,7 @@
 #include <QSlider>
 #include <QMenu>
 #include <QInputDialog>
+#include <QFontMetrics>
 
 #include <iostream>
 
@@ -133,6 +134,8 @@ public:
             this->setStyleSheet("background-color: #" + CLR_ENABLED);
         }
     }
+
+    static QString formatFiletypes(const char* filetypes[], const int &num);
 
 private:
     void saveVolume(QString* filePath);

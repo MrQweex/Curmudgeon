@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QtPlugin>
+#include "SoundBoard.h"
 
 int main(int argc, char *argv[])
 {
@@ -9,8 +10,18 @@ int main(int argc, char *argv[])
     MainWindow w;
     QApplication::setWindowIcon(QIcon(":/logo/images/logo_512.png"));
     w.show();
-    w.newSoundboard();
-    //a.connect(&a, SIGNAL(aboutToQuit()), &w, SLOT(requestQuit()));
+    bool opened = false;
+    if(Options::init_returnLoadLast())
+    {
+        for(int i=0; i<5; i++)
+        {
+            if(Options::recentFiles[i].length()==0)
+                break;
+            w.AddSoundboard(new SoundBoard(Options::recentFiles[i]));
+            opened=true;
+        }
+    }
+    if(!opened)
+        w.newSoundboard();
     return a.exec();
 }
-//*/

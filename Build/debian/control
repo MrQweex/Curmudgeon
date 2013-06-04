@@ -12,4 +12,3 @@ Package: curmudgeon
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libqt4-gui, gstreamer0.10-alsa, gstreamer0.10-plugins-base, gstreamer0.10-tools
 Description: Soundboard audio clip player
-Version: 1.0

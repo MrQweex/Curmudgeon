@@ -59,6 +59,22 @@ MainWindow::MainWindow(QWidget *parent) :
         }
         File->addSeparator();
         {
+            QMenu* recent = new QMenu("Open Recent");
+            for(int i=0; i<6; i++)
+            {
+                if(Options::recentFiles[i].length())
+                    break;
+                QAction* r = new QAction(Options::recentFiles[i],recent);
+                recent->addAction(r);
+            }
+            connect(recent,SIGNAL(triggered(QAction*)),this,SLOT(openRecentFile(QAction*)));
+        }
+        {
+            QAction* preferences = new QAction(tr("Preferences"),File);
+            connect(preferences,SIGNAL(triggered()),this,SLOT(showPreferences()));
+            File->addAction(preferences);
+        }
+        {
             QAction* quit = new QAction(tr("Quit Soundboard"),File);
             quit->setShortcut(tr("Ctrl+Q"));
             connect(quit,SIGNAL(triggered()),this,SLOT(close()));
@@ -123,7 +139,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    std::cout << "Destroy: Window" << std::endl;
+    //delete ui;
 }
 
 void MainWindow::AddSoundboard(SoundBoard *newTab)
@@ -169,6 +186,7 @@ void MainWindow::openSoundboard()
         the_tabs->removeTab(0);
 
     AddSoundboard(new SoundBoard(path));
+    Options::writeRecent(&path);
 }
 
 bool MainWindow::saveSoundboard()
@@ -260,4 +278,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
         }
     }
     event->accept();
+}
+
+void MainWindow::openRecentFile(QAction* a)
+{
+    if(the_tabs->count()==1
+            && !soundboards.at(the_tabs->currentIndex())->getModified())
+        the_tabs->removeTab(0);
+
+    AddSoundboard(new SoundBoard(a->text()));
 }
