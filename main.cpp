@@ -3,6 +3,10 @@
 #include <QtPlugin>
 #include "SoundBoard.h"
 
+#ifdef SUPPORT_THE_DEV
+    #include "Purchase/Purchase.h"
+#endif
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

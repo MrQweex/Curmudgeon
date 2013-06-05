@@ -14,6 +14,13 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Curmudgeon
 TEMPLATE = app
 
+# Proprietary stuff that I'm going to hell for
+exists(Purchase\Purchase.h)
+{
+    DEFINES += "SUPPORT_THE_DEV"
+    HEADERS += Purchase/Purchase.h
+}
+
 
 SOURCES += main.cpp\
         MainWindow.cpp \
