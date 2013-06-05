@@ -17,7 +17,6 @@
 #include <QSlider>
 #include <QMenu>
 #include <QInputDialog>
-#include <QFontMetrics>
 
 #include <iostream>
 

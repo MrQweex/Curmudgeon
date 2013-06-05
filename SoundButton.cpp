@@ -70,7 +70,6 @@ void SoundButton::init()
     name = new QLabelWrapEllip(QString(""));
     name->setStyleSheet("background:none;");
     name->setAlignment(Qt::AlignTop);
-    name->setWordWrap(true);
 
     id = new QLabel(QString(QChar(ID)));
     id->setStyleSheet("border: 1px solid #" + CLR_TXT_DISABLED + "; color: #" + CLR_TXT_DISABLED);
@@ -378,7 +377,8 @@ void SoundButton::dropEvent(QDropEvent *event)
 
 void SoundButton::setMedia(QString newFile)
 {
-    player = AudioPlayerFactory::createFromFile(newFile.toStdString().c_str());
+    QString temp = newFile.toUtf8();
+    player = AudioPlayerFactory::createFromFile(temp.toStdString().c_str());
     if(player==NULL)
     {
          std::cerr << "ERROR: could not create AudioPlayer for: "  << newFile.toStdString() << std::endl;
