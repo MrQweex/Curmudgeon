@@ -5,12 +5,16 @@
 #include <QVector>
 #include <QLabel>
 #include <QTabWidget>
-#include "SoundBoard.h"
-#include "VersionDialog.h"
-
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QApplication>
+#include <QDesktopServices>
+#include "SoundBoard.h"
+#include "VersionDialog.h"
+
+#ifdef SUPPORT_THE_DEV
+    #include "Purchase/Purchase.h"
+#endif
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +35,22 @@ public:
                                 (the_tabs->tabText(the_tabs->currentIndex()))
                              );
     }
+    void updateRecentMenu()
+    {
+        recentMenu->clear();
+
+        for(int i=0; i<Options::recentCount-1; i++)
+        {
+            if(Options::recentFiles[i].length()==0)
+                break;
+            QAction* r = new QAction(Options::recentFiles[i],recentMenu);
+            recentMenu->addAction(r);
+        }
+        QAction* clear = new QAction("Clear", recentMenu);
+        recentMenu->addAction(clear);
+
+        connect(recentMenu,SIGNAL(triggered(QAction*)),this,SLOT(openRecentFile(QAction*)));
+    }
 
 private:
     Ui::MainWindow *ui;
@@ -39,6 +59,7 @@ private:
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
     VersionDialog* m_versionDialog;
+    QMenu* recentMenu;
 
 public slots:
     void newSoundboard();
@@ -53,6 +74,17 @@ public slots:
     void prevTab();
     void closeEvent(QCloseEvent *event);
     void openRecentFile(QAction*);
+#ifdef SUPPORT_THE_DEV
+    void buy()
+    {
+        QDesktopServices::openUrl(QUrl("http://curmudgeon-app.com/buy"));
+    }
+    void licenseKey()
+    {
+        Purchase::showLicenseDialog(this);
+    }
+
+#endif
 
 };
 

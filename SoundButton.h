@@ -37,7 +37,8 @@ private:
                   CLR_NOT_SET,
                   CLR_TXT_ENABLED,
                   CLR_TXT_DISABLED,
-                  CLR_DRAG;
+                  CLR_DRAG,
+                  CLR_ERROR;
     static const QString FILETYPES;
     //What this button is; for example, '1', 'a', 'q', etc...
     QChar ID;
@@ -66,19 +67,24 @@ private:
 
 
 public:
-    void turnOff() { setStyleSheet("background-color: #" + CLR_ENABLED); }
+    inline void turnOff() { setStyleSheet("background-color: #" + CLR_ENABLED); }
+    inline void turnError() { setStyleSheet("background-color: #" + CLR_ERROR); }
     enum _DONE_ACTION { DONE_STOP, DONE_LOOP };
     enum _RELEASED_ACTION { RELEASED_STOP, RELEASED_CONTINUE };
     enum _REPRESSED_ACTION { REPRESSED_STOP, REPRESSED_RESTART };
 
     //Basic constructor
-    SoundButton(int*,QChar id,
+    SoundButton(QWidget* Parent,
+                QString* s,
+                int*,QChar id,
                 _DONE_ACTION  doneAction,
                 _RELEASED_ACTION releaseAction,
                 _REPRESSED_ACTION repressAction);
 
     //Consctuctor for reading in data
-    SoundButton(int*,QChar id,
+    SoundButton(QWidget* Parent,
+                QString* s,
+                int*,QChar id,
                  QString path,
                  int vol,
                  QString nick,
@@ -96,7 +102,6 @@ public:
         if(name) delete name;
         if(id) delete id;
         if(player) delete player;
-        if(boards_ini_file_path) delete boards_ini_file_path;
     }
     void resizeEvent(QResizeEvent* event);
 
@@ -119,7 +124,11 @@ public:
     //Listener inherited from AudioPlayer
     virtual void playingFinished();
 
-    void saveToFile(QString*);
+    void setBoardFile(QString * q)
+    {
+        boards_ini_file_path = q;
+    }
+    void saveToFile();
 
     void refreshVolume();
     void setBalance(int);
@@ -137,11 +146,10 @@ public:
     static QString formatFiletypes(const char* filetypes[], const int &num);
 
 private:
-    void saveVolume(QString* filePath);
-    void saveNickname(QString* filePath);
-    void saveDoneAction(QString* filePath);
-    void saveReleaseAction(QString* filePath);
-    void saveRepressAction(QString* filePath);
+    void saveNickname();
+    void saveDoneAction();
+    void saveReleaseAction();
+    void saveRepressAction();
     bool measured;
     _DONE_ACTION doneAction;
     _RELEASED_ACTION releasedAction;
@@ -171,7 +179,7 @@ protected:
 
 private slots:
     void volumeChanged(int);
-    void saveVolume() { if(boards_ini_file_path) saveVolume(boards_ini_file_path); }
+    void saveVolume();
     void rename();
     void changeSound();
     void destroy();

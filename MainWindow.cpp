@@ -1,16 +1,16 @@
-#include "MainWindow.h"
-#include "ui_mainwindow.h"
-#include "SoundButton.h"
-
 #include <QObjectList>
-#include <iostream>
-
 #include <QAction>
 #include <QMessageBox>
-     //Needed for if(typeid(...)==typeid(...))
 #include <typeinfo>
 #include <QSizeGrip>
 #include <QMenuBar>
+
+#include <iostream>
+#include <typeinfo>
+
+#include "MainWindow.h"
+#include "ui_mainwindow.h"
+#include "SoundButton.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -59,15 +59,9 @@ MainWindow::MainWindow(QWidget *parent) :
         }
         File->addSeparator();
         {
-            QMenu* recent = new QMenu("Open Recent");
-            for(int i=0; i<6; i++)
-            {
-                if(Options::recentFiles[i].length())
-                    break;
-                QAction* r = new QAction(Options::recentFiles[i],recent);
-                recent->addAction(r);
-            }
-            connect(recent,SIGNAL(triggered(QAction*)),this,SLOT(openRecentFile(QAction*)));
+            recentMenu = new QMenu("Open Recent");
+            updateRecentMenu();
+            File->addMenu(recentMenu);
         }
         {
             QAction* preferences = new QAction(tr("Preferences"),File);
@@ -128,12 +122,31 @@ MainWindow::MainWindow(QWidget *parent) :
             connect(license,SIGNAL(triggered()),this,SLOT(showLicense()));
             Help->addAction(license);
         }
-        {
-            QAction* buy = new QAction(tr("Buy"),Help);
-            //connect(zoom,SIGNAL(triggered()),this,SLOT(nextTab()));
-            Help->addAction(buy);
-        }
         this->menuBar()->addMenu(Help);
+
+#ifdef SUPPORT_THE_DEV
+        if(Purchase::keyIsValid())
+        {
+            QAction* key = new QAction(tr("View License Info"),Help);
+            connect(key,SIGNAL(triggered()),this,SLOT(licenseKey()));
+            Help->addAction(key);
+        }
+        else
+        {
+            QMenu* dev = new QMenu("Support the Dev");
+            {
+                QAction* buy = new QAction("Buy",dev);
+                connect(buy,SIGNAL(triggered()),this,SLOT(buy()));
+                dev->addAction(buy);
+            }
+            {
+                QAction* key = new QAction("Enter License Key",dev);
+                connect(key,SIGNAL(triggered()),this,SLOT(licenseKey()));
+                dev->addAction(key);
+            }
+            this->menuBar()->addMenu(dev);
+        }
+#endif
     }
 }
 
@@ -172,6 +185,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent * e)
 void MainWindow::newSoundboard()
 {
     AddSoundboard(new SoundBoard());
+    the_tabs->setCurrentIndex(the_tabs->count()-1);
 }
 
 void MainWindow::openSoundboard()
@@ -179,14 +193,27 @@ void MainWindow::openSoundboard()
     QString path = QFileDialog::getOpenFileName(this,"Select file",QString(),"Curmudgeon files (*.crmdgn)");
     if(path.length()==0)
         return;
+    Options::writeRecent(&path);
+    updateRecentMenu();
+    for(int i=0; i<soundboards.count(); i++)
+    {
+        if(soundboards[i]->getPath()==path)
+        {
+            the_tabs->setCurrentIndex(i);
+            return;
+        }
+    }
 
     //If there is a new, blank soundboard open, close it
     if(the_tabs->count()==1
-            && !soundboards.at(the_tabs->currentIndex())->getModified())
+            && soundboards.first()->isVirgin())
+    {
+        std::cout << "DERP" << soundboards.at(the_tabs->currentIndex())->shouldPromptToSave() << std::endl;
         the_tabs->removeTab(0);
+    }
 
     AddSoundboard(new SoundBoard(path));
-    Options::writeRecent(&path);
+    the_tabs->setCurrentIndex(the_tabs->count()-1);
 }
 
 bool MainWindow::saveSoundboard()
@@ -195,12 +222,14 @@ bool MainWindow::saveSoundboard()
     if(fileSelect.length()==0)
         return false;
     (soundboards.at(the_tabs->currentIndex()))->saveToFile(fileSelect);
+    Options::writeRecent(&fileSelect);
+    updateRecentMenu();
     return true;
 }
 
 void MainWindow::closeSoundboard(int index)
 {
-    if (soundboards.at(index)->getModified())
+    if (soundboards.at(index)->shouldPromptToSave())
     {
         int userAnswer = QMessageBox::question(this, "Unsaved Soundboard", "Would you like to save before closing?", QMessageBox::Yes|QMessageBox::No|QMessageBox::Cancel);
         if(QMessageBox::Yes == userAnswer)
@@ -234,7 +263,6 @@ void MainWindow::showAbout()
 {
     QString title = tr("About Curmudgeon ");
     title.append(APP_VERSION);
-    //QMessageBox::about(NULL, title, "BLAAAAAAH");
 
     if (!m_versionDialog) {
         m_versionDialog = new VersionDialog(this);
@@ -254,7 +282,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     for(int i=0; i<soundboards.size(); i++)
     {
-        if(soundboards[i]->getModified())
+        if(soundboards[i]->shouldPromptToSave())
         {
             the_tabs->setCurrentIndex(i);
             QMessageBox::StandardButton reply;
@@ -277,14 +305,61 @@ void MainWindow::closeEvent(QCloseEvent *event)
             }
         }
     }
+    //Delete the old saved tabs
+    {
+        int count = Options::settings->value("lastCount").toInt();
+        for(int i=0; i<count; i++)
+            Options::settings->remove(QString("last%1").arg(i));
+        Options::settings->remove("lastCount");
+    }
+
+    //Save open tabs
+    {
+        int count = 0;
+        int countDup = soundboards.size();
+        for(int i=0; i<countDup; i++)
+        {
+            if(soundboards[i]->getPath().length()>0)
+            {
+                Options::settings->setValue(QString("last%1").arg(count++), soundboards[i]->getPath());
+            }
+        }
+        Options::settings->setValue("lastCount", QString("%1").arg(count));
+    }
     event->accept();
 }
 
 void MainWindow::openRecentFile(QAction* a)
 {
+    if(a->text()=="Clear")
+    {
+        for(int i=0; i<Options::recentCount; i++)
+        {
+            Options::recentFiles[i] = "";
+            Options::settings->setValue(QString("recent%1").arg(i), Options::recentFiles[i]);
+        }
+        updateRecentMenu();
+        return;
+    }
+
     if(the_tabs->count()==1
-            && !soundboards.at(the_tabs->currentIndex())->getModified())
+            && soundboards.at(the_tabs->currentIndex())->isVirgin())
         the_tabs->removeTab(0);
 
+    QString* fucktwit = new QString(a->text());
+    Options::writeRecent(fucktwit);
+    delete fucktwit;
+    updateRecentMenu();
+    std::cout << "dsadsadsD" << std::endl;
+
+    //Check if it is already open
+    for(int i=0; i<soundboards.size(); i++)
+    {
+        if(soundboards[i]->getPath()==a->text())
+        {
+            the_tabs->setCurrentIndex(i);
+            return;
+        }
+    }
     AddSoundboard(new SoundBoard(a->text()));
 }

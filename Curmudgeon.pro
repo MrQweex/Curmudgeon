@@ -14,14 +14,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Curmudgeon
 TEMPLATE = app
 
-# Proprietary stuff that I'm going to hell for
-exists(Purchase\Purchase.h)
-{
-    DEFINES += "SUPPORT_THE_DEV"
-    HEADERS += Purchase/Purchase.h
-}
-
-
 SOURCES += main.cpp\
         MainWindow.cpp \
     SoundButton.cpp \
@@ -63,7 +55,7 @@ win32 {
             -lrpcrt4
     RC_FILE = winicon.rc
 }
-unix:!macx {
+linux-g++ {
     # On Linux this includes the -dev package of gstreamer.
     # On Ubuntu-like systems the package is:    libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev
 
@@ -74,42 +66,17 @@ unix:!macx {
                  gstreamer-audio-0.10
     SOURCES += AudioPlayerClass/AudioPlayerGnu.cpp
     HEADERS += AudioPlayerClass/AudioPlayerGnu.h
-
-
-    #Install
-    #PREFIX = /opt
-    #BINDIR = $$PREFIX/curmudgeon
-    #DATADIR = $$BINDIR
-
-    #DEFINES += DATADIR=\\\"$$DATADIR\\\" PKGDATADIR=\\\""$$PKGDATADIR\\\"
-    #INSTALLS += target desktop icon26 icon48 icon64
 }
 
-#QMAKE_CXX = g++  #used for testing g++/Ming on Mac
+OTHER_FILES += IconNotes.txt
 
-
-
-#mpg123
-#LIBS += /usr/local/lib/libmpg123.dylib
-
-#ffmpeg
-#INCLUDEPATH += include
-#LIBS += -Llib
-#LIBS += -lavcodec
-#LIBS += -lavfilter
-#LIBS += -lavformat
-#LIBS += -lavutil
-#LIBS += -lswscale
-
-#ao
-#INCLUDEPATH += libao/include
-
-
-#SFML
-#LIBS += -framework sfml-audio
-#LIBS += -framework sfml-system
-
-OTHER_FILES += \
-    IconNotes.txt
-
-
+# Proprietary stuff that I'm going to hell for\
+!exists(Purchase/Purchase.hh)
+{
+    DEFINES += "SUPPORT_THE_DEV"
+    HEADERS += Purchase/Purchase.h \
+               Purchase/QProgressIndicator.h
+    SOURCES += Purchase/QProgressIndicator.cpp \
+               Purchase/Purchase.cpp
+    QT += network
+}

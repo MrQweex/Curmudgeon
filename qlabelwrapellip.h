@@ -13,30 +13,10 @@ class QLabelWrapEllip : public QLabel
 private:
     QString fullText;
     int maxWidth, maxHeight;
-public:
 
-    QLabelWrapEllip(QString) : maxWidth(0), maxHeight(0), measured(false)
+    QString getShortText(QString ename)
     {
-        QLabel(QString);
-//        setWordWrap(true);
-    }
-
-
-    void setText(const QString &q)
-    {
-        fullText = q;
-
-        int left, right, top, bottom;
-        parentWidget()->getContentsMargins(&left, &top, &right, &bottom);
-//        maxWidth = this->parentWidget()->width() - left - right - 15;
-//        maxHeight = this->parentWidget()->height() - top - bottom;
-        maxWidth = this->size().width();
-        maxHeight = this->size().height();
-
-
         QFontMetrics metrics(font());
-        QString ename = q;
-
         int currentChar = 0, w=0, h=1;
         int lastX = -1;
         while(currentChar<ename.length())
@@ -80,38 +60,40 @@ public:
             ename = ename.replace(x,1,'\n');
             lastX = x;
         }
+        return ename;
+    }
+
+public:
+
+    QLabelWrapEllip(QString) : maxWidth(0), maxHeight(0), measured(false)
+    {
+        QLabel(QString);
+//        setWordWrap(true);
+    }
 
 
-        QLabel::setText(ename);
+    void setText(const QString &q)
+    {
+        fullText = q;
+        if(measured)
+            QLabel::setText(getShortText(q));
     }
 
     bool measured;
     void resizeEvent(QResizeEvent* event)
     {
-        if(this->text().length()>0)
-        std::cout << event->size().width() << "vs" << maxWidth
-                  << "  " << this->parentWidget()->width()
-                  << " " << this->text().toStdString() <<  std::endl;
         event->accept();
         if(measured)
             return;
-        else
-        {
-            setMinimumSize(event->size());
-        }
-        measured=false;
+        measured=true;
+        setMinimumSize(event->size());
 
-        if((maxWidth>0 && event->size().width()>=maxWidth)
-                ||(maxHeight>0 && event->size().height()>maxHeight))
-        {
-            QString qname = fullText;
+        int left, right, top, bottom;
+        parentWidget()->getContentsMargins(&left, &top, &right, &bottom);
+        maxWidth = this->size().width();
+        maxHeight = this->size().height();
 
-            QFontMetrics metrics(font());
-            qname = metrics.elidedText(qname, Qt::ElideRight, maxWidth);
-
-            QLabel::setText(qname);
-        }
-
+        QLabel::setText(getShortText(fullText));
     }
 };
 

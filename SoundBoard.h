@@ -45,6 +45,7 @@ public:
     SoundButton* getButton(int i);
 
     QString getName();
+    QString getPath() { return ini_file_path; }
 
     void pressKey(QChar c);
 
@@ -52,9 +53,8 @@ public:
 
     void saveToFile(QString path);
 
-    bool getModified()
+    bool shouldPromptToSave()
     {
-        std::cout << "?" << virgin << "&&" << ini_file_path.toStdString() << std::endl;
         return !virgin && ini_file_path.length()==0;
     }
     bool isVirgin() { return virgin; }

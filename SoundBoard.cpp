@@ -10,7 +10,8 @@ SoundBoard::SoundBoard() : name("New Soundboard"), virgin(true), boardVolume(100
     init();
     for(int i=0; i<BUTTON_COUNT; i++)
     {
-        buttons[i] = new SoundButton(&boardVolume, ids[i], Options::defaultDoneAction, Options::defaultReleasedAction, Options::defaultRepressedAction);
+        buttons[i] = new SoundButton(this, NULL,
+                                     &boardVolume, ids[i], Options::defaultDoneAction, Options::defaultReleasedAction, Options::defaultRepressedAction);
         grid->addWidget(buttons[i],i/8,i%8);
     }
     initLower();
@@ -34,6 +35,8 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), boardVolume(100)
         path = CIniFile::GetValue(std::string("path"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
         if(path.length()>0)
         {
+            std::cout << "Loading: " << ids[i].toAscii() << " " << path << std::endl;
+
             //TODO: parse more reliably
             vol = atoi(CIniFile::GetValue("vol", std::string(1,ids[i].toAscii()), ini_file_path.toStdString()).c_str());
             nick = CIniFile::GetValue(std::string("nick"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
@@ -62,10 +65,12 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), boardVolume(100)
             else
                 repressed = Options::defaultRepressedAction;
 
-            buttons[i] = new SoundButton(&boardVolume, ids[i],QString(path.c_str()), vol, QString(nick.c_str()),
+            buttons[i] = new SoundButton(this, &ini_file_path,
+                                         &boardVolume, ids[i],QString(path.c_str()), vol, QString(nick.c_str()),
                                          done, released, repressed);
         } else
-            buttons[i] = new SoundButton(&boardVolume, ids[i], Options::defaultDoneAction, Options::defaultReleasedAction, Options::defaultRepressedAction);
+            buttons[i] = new SoundButton(this, &ini_file_path,
+                                         &boardVolume, ids[i], Options::defaultDoneAction, Options::defaultReleasedAction, Options::defaultRepressedAction);
         grid->addWidget(buttons[i],i/8,i%8);
     }
     initLower();
@@ -218,7 +223,10 @@ void SoundBoard::saveToFile(QString path)
         return;
     }
     for(int i=0; i<BUTTON_COUNT; i++)
-        buttons[i]->saveToFile(&ini_file_path);
+    {
+        buttons[i]->setBoardFile(&ini_file_path);
+        buttons[i]->saveToFile();
+    }
 
     //Rename the tab
     QFileInfo fi(path);

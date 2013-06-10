@@ -1,8 +1,10 @@
 #include "SoundButton.h"
 #include "SoundBoard.h"
 
-#ifdef _WIN32 || __APPLE__
-const QString SoundButton::FILETYPES = "(*.wav *.mp3)";
+#ifdef _WIN32
+const QString SoundButton::FILETYPES = formatFiletypes(AudioPlayerWin::FILETYPES, AudioPlayerWin::FILETYPE_COUNT);
+#elif defined __APPLE__
+const QString SoundButton::FILETYPES = formatFiletypes(AudioPlayerOsx::FILETYPES, AudioPlayerOsx::FILETYPE_COUNT);
 #else
 const QString SoundButton::FILETYPES = formatFiletypes(AudioPlayerGnu::FILETYPES, AudioPlayerGnu::FILETYPE_COUNT);
 #endif
@@ -16,7 +18,8 @@ const QString
           SoundButton::CLR_NOT_SET = "E6E0CF",
           SoundButton::CLR_TXT_ENABLED = "000",
           SoundButton::CLR_TXT_DISABLED = "888",
-          SoundButton::CLR_DRAG = "BEE6B8";
+          SoundButton::CLR_DRAG = "BEE6B8",
+          SoundButton::CLR_ERROR = "E01B1B";
 
 
 QString SoundButton::formatFiletypes(const char* filetypes[], const int &num)
@@ -31,12 +34,17 @@ QString SoundButton::formatFiletypes(const char* filetypes[], const int &num)
     return result.append(")");
 }
 
-SoundButton::SoundButton(int* bvol, QChar id,
+SoundButton::SoundButton(QWidget* Parent,
+                         QString* ini_path,
+                         int* bvol,
+                         QChar id,
                          _DONE_ACTION  doneAction,
                          _RELEASED_ACTION releaseAction,
                          _REPRESSED_ACTION repressAction) : board_volume_level(bvol)
 {
+    this->setParent(Parent);
     ID = id;
+    this->setBoardFile(ini_path);
     this->doneAction = doneAction;
     this->releasedAction = releaseAction;
     this->repressedAction = repressAction;
@@ -44,7 +52,9 @@ SoundButton::SoundButton(int* bvol, QChar id,
     volume->setValue(100);
 }
 
-SoundButton::SoundButton(int* bvol,
+SoundButton::SoundButton(QWidget* Parent,
+                         QString* ini_path,
+                         int* bvol,
                          QChar id,
                          QString path,
                          int vol,
@@ -54,13 +64,14 @@ SoundButton::SoundButton(int* bvol,
                          _REPRESSED_ACTION repressAction
                          ) : board_volume_level(bvol)
 {
+    this->setParent(Parent);
     ID = id;
+    this->setBoardFile(ini_path);
+    nickname = nick;
     init();
     setMedia(path);
     volume_level = vol;
     volume->setValue(vol);
-    nickname = nick;
-    name->setText(nickname);
 }
 
 #include <QLayout>
@@ -175,7 +186,6 @@ void SoundButton::init()
 #endif
 
     player = NULL;
-    boards_ini_file_path = NULL;
 }
 
 void SoundButton::destroy()
@@ -189,8 +199,6 @@ void SoundButton::destroy()
     player = NULL;
     sound_file_path="";
     nickname="";
-    if(boards_ini_file_path)
-        saveToFile(boards_ini_file_path);   //should delete the section
 }
 
 void SoundButton::rename()
@@ -201,7 +209,7 @@ void SoundButton::rename()
         return;
     nickname = newname;
     name->setText(nickname);
-    saveNickname(boards_ini_file_path);
+    saveNickname();
 }
 
 void SoundButton::volumeChanged(int newvol)
@@ -303,7 +311,8 @@ void SoundButton::pressKey()
     else
     {
         this->setStyleSheet("background-color: #" + CLR_PLAYING);
-        player->play();
+        if(player->play())
+            turnError();
     }
 }
 
@@ -323,7 +332,7 @@ void SoundButton::releaseKey()
 
 void SoundButton::playingFinished()
 {
-    std::cout << "Playing Finished" << std::endl;
+    std::cout << "Playing Finished: " << std::endl;
     if(doneAction==DONE_LOOP)
         pressKey();
     else
@@ -379,13 +388,19 @@ void SoundButton::setMedia(QString newFile)
 {
     QString temp = newFile.toUtf8();
     player = AudioPlayerFactory::createFromFile(temp.toStdString().c_str());
+
     if(player==NULL)
     {
          std::cerr << "ERROR: could not create AudioPlayer for: "  << newFile.toStdString() << std::endl;
+         turnError();
          return;
     }
     this->setStyleSheet("background-color: #" + CLR_ENABLED);
     sound_file_path = newFile;
+
+    std::cout << "FILE: " << boards_ini_file_path << std::endl;
+    saveToFile();
+
     QFileInfo fileInfo(sound_file_path);
 
     if(nickname.length()==0)
@@ -406,27 +421,33 @@ void SoundButton::setMedia(QString newFile)
 }
 
 
-void SoundButton::saveToFile(QString* filePath)
+void SoundButton::saveToFile()
 {
-    boards_ini_file_path = filePath;
+    if(!boards_ini_file_path)
+    {
+        ((SoundBoard*)this->parentWidget())->breakVirgin();
+        return;
+    }
+    std::cout << "FILE: " << boards_ini_file_path->toStdString() << std::endl;
+
     const char c[] = { ID.toAscii(), '\0' };
     if(sound_file_path.length()==0)
     {
-        CIniFile::DeleteSection(std::string(c),filePath->toStdString());
+        CIniFile::DeleteSection(std::string(c),boards_ini_file_path->toStdString());
         return;
     }
     CIniFile::SetValue("path",
                        sound_file_path.toStdString(),
                        std::string(c),
-                       filePath->toStdString());
-    saveVolume(filePath);
-    saveNickname(filePath);
-    saveDoneAction(filePath);
-    saveReleaseAction(filePath);
-    saveRepressAction(filePath);
+                       boards_ini_file_path->toStdString());
+    saveVolume();
+    saveNickname();
+    saveDoneAction();
+    saveReleaseAction();
+    saveRepressAction();
 }
 
-void SoundButton::saveVolume(QString* filePath)
+void SoundButton::saveVolume()
 {
     if(!boards_ini_file_path)
     {   //This should not happen
@@ -438,10 +459,10 @@ void SoundButton::saveVolume(QString* filePath)
     CIniFile::SetValue("vol",
                        QString("%1").arg(this->volume_level).toStdString(),
                        std::string(c),
-                       filePath->toStdString());
+                       boards_ini_file_path->toStdString());
 }
 
-void SoundButton::saveNickname(QString* filePath)
+void SoundButton::saveNickname()
 {
     if(!boards_ini_file_path)
     {   //This should not happen
@@ -454,14 +475,14 @@ void SoundButton::saveNickname(QString* filePath)
         CIniFile::SetValue("nick",
                            nickname.toStdString(),
                            std::string(c),
-                           filePath->toStdString());
+                           boards_ini_file_path->toStdString());
     else
         CIniFile::DeleteRecord("nick",
                                std::string(c),
-                               filePath->toStdString());
+                               boards_ini_file_path->toStdString());
 }
 
-void SoundButton::saveDoneAction(QString* filePath)
+void SoundButton::saveDoneAction()
 {
     if(!boards_ini_file_path)
     {   //This should not happen
@@ -483,10 +504,10 @@ void SoundButton::saveDoneAction(QString* filePath)
     CIniFile::SetValue("done",
                        out,
                        std::string(c),
-                       filePath->toStdString());
+                       boards_ini_file_path->toStdString());
 }
 
-void SoundButton::saveReleaseAction(QString* filePath)
+void SoundButton::saveReleaseAction()
 {
     if(!boards_ini_file_path)
     {   //This should not happen
@@ -508,10 +529,10 @@ void SoundButton::saveReleaseAction(QString* filePath)
     CIniFile::SetValue("released",
                        out,
                        std::string(c),
-                       filePath->toStdString());
+                       boards_ini_file_path->toStdString());
 }
 
-void SoundButton::saveRepressAction(QString* filePath)
+void SoundButton::saveRepressAction()
 {
     if(!boards_ini_file_path)
     {
@@ -533,7 +554,7 @@ void SoundButton::saveRepressAction(QString* filePath)
     CIniFile::SetValue("repressed",
                        out,
                        std::string(c),
-                       filePath->toStdString());
+                       boards_ini_file_path->toStdString());
 }
 
 void SoundButton::menu_doneStop()

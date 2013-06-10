@@ -20,5 +20,7 @@
         <file>images/l.png</file>
         <file>LICENSE.QPL</file>
         <file>images/stop.png</file>
+        <file>images/qweex.png</file>
+        <file>images/muhface.jpg</file>
     </qresource>
 </RCC>

@@ -111,7 +111,7 @@ void VersionDialog::License()
     text->setText(data.readAll());
     QFontMetrics qfm(text->font());
     text->setMinimumSize(
-                qfm.width("The intent of this license is to establish freedom to share and change the")+10,
+                qfm.width("     b. You must ensure that all recipients of the machine-executable forms")+50,
                 qfm.height()*30);
     text->setReadOnly(true);
 
