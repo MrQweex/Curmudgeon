@@ -4,7 +4,6 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QtPlugin>
-#include <QSystemTrayIcon>
 #include "SoundBoard.h"
 
 int main(int argc, char *argv[])
@@ -44,8 +43,5 @@ int main(int argc, char *argv[])
     if(Purchase::firstTime && !Purchase::keyIsValid())
         Purchase::beg();
 #endif
-
-    QSystemTrayIcon duck;
-    duck.showMessage("Herpderpderp","derp");
     return a.exec();
 }
