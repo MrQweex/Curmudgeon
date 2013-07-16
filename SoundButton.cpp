@@ -81,6 +81,9 @@ void SoundButton::init()
     name = new QLabelWrapEllip(QString(""));
     name->setStyleSheet("background:none;");
     name->setAlignment(Qt::AlignTop);
+    #ifdef _WIN32
+        name->setMargin(5);
+    #endif
 
     id = new QLabel(QString(QChar(ID)));
     id->setStyleSheet("border: 1px solid #" + CLR_TXT_DISABLED + "; color: #" + CLR_TXT_DISABLED);
