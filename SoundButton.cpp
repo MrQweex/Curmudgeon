@@ -83,6 +83,10 @@ void SoundButton::init()
     name->setAlignment(Qt::AlignTop);
     #ifdef _WIN32
         name->setMargin(5);
+    #elif __APPLE__
+        name->setMargin(0);
+    #else
+        name->setMargin(5);
     #endif
 
     id = new QLabel(QString(QChar(ID)));
