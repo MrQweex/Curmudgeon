@@ -65,7 +65,6 @@ private:
     //The nickname
     QString nickname;
 
-
 public:
     inline void turnOff() { setStyleSheet("background-color: #" + CLR_ENABLED); }
     inline void turnError() { setStyleSheet("background-color: #" + CLR_ERROR); }
