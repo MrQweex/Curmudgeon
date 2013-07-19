@@ -133,18 +133,18 @@ MainWindow::MainWindow(QWidget *parent) :
         }
         else
         {
-            QMenu* dev = new QMenu("Support the Dev");
+            devMenu = new QMenu("Support the Dev");
             {
-                QAction* buy = new QAction("Buy",dev);
+                QAction* buy = new QAction("Buy",devMenu);
                 connect(buy,SIGNAL(triggered()),this,SLOT(buy()));
-                dev->addAction(buy);
+                devMenu->addAction(buy);
             }
             {
-                QAction* key = new QAction("Enter License Key",dev);
+                QAction* key = new QAction("Enter License Key",devMenu);
                 connect(key,SIGNAL(triggered()),this,SLOT(licenseKey()));
-                dev->addAction(key);
+                devMenu->addAction(key);
             }
-            this->menuBar()->addMenu(dev);
+            this->menuBar()->addMenu(devMenu);
         }
 #endif
     }
@@ -276,6 +276,18 @@ void MainWindow::showAbout()
 void MainWindow::showLicense()
 {
     VersionDialog::License();
+}
+
+void MainWindow::haveReceivedLicenseConfirmation()
+{
+    QAction *toRemove = menuBar()->actions().back();
+    this->menuBar()->removeAction(toRemove);
+
+    QMenu* Help = (QMenu*)this->menuBar()->actions().back()->parent();
+    QAction* key = new QAction(tr("View License Info"),Help);
+    connect(key,SIGNAL(triggered()),this,SLOT(licenseKey()));
+    Help->addAction(key);
+    std::cout << "KEYEEEEE: " << Purchase::licenseKey.toStdString() << std::endl;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

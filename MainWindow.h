@@ -59,7 +59,7 @@ private:
     void keyPressEvent(QKeyEvent *);
     void keyReleaseEvent(QKeyEvent *);
     VersionDialog* m_versionDialog;
-    QMenu* recentMenu;
+    QMenu *recentMenu, *devMenu;
 
 public slots:
     void newSoundboard();
@@ -85,7 +85,7 @@ public slots:
     }
 
 #endif
-
+    void haveReceivedLicenseConfirmation();
 };
 
 #endif // MAINWINDOW_H
