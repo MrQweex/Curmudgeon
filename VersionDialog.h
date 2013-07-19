@@ -32,6 +32,9 @@
 
 #include <QDialog>
 #include <QString>
+#include <iostream>
+#include <QClipboard>
+#include <QApplication>
 
 static const QString versionString = "Curmudgeon 1.0",
         buildDate = "May 29, 2013",
@@ -44,6 +47,15 @@ class VersionDialog : public QDialog
 public:
     explicit VersionDialog(QWidget *parent);
     static void License();
+
+private:
+    static const QString BTC;
+    static const QString LTC;
+
+public slots:
+    void copyBTC() { QApplication::clipboard()->setText(BTC); }
+
+    void copyLTC() { QApplication::clipboard()->setText(LTC); }
 };
 
 

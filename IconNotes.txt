@@ -5,3 +5,6 @@ Volume control icons:
     http://www.iconarchive.com/show/icons8-metro-style-icons-by-visualpharm/Volume-Controls-Volume-down-icon.html
     http://www.iconarchive.com/show/icons8-metro-style-icons-by-visualpharm/Volume-Controls-Volume-up-icon.html
     http://www.visualpharm.com/
+
+Clipboard icon:
+    https://github.com/yusukekamiyamane/fugue-icons/blob/master/icons/clipboard--arrow.png

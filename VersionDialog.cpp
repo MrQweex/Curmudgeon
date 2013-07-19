@@ -33,9 +33,12 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QLineEdit>
 
 #include <iostream>
 
+const QString VersionDialog::BTC = "16Y7xEtFY18YanhzzigGhnnoyNewZEZDBT";
+const QString VersionDialog::LTC = "LcQp2ZqDw5ew4wGeauN57i8xME3UKrqore";
 
 VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
 {
@@ -51,14 +54,14 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
     layout->setSizeConstraint(QLayout::SetFixedSize);
 
      const QString description = tr(
-        "<h3>%1</h3>"
+        "<br/><h2>%1</h2>"
         "Based on Qt %2 (%3-bit)<br/>"
         "<br/>"
         "Built on %4 %5<br />"
         "<br/>"
         "Copyright 2013-%6 %7. All rights reserved.<br/>"
         "<br/>"
-        "The program released under the <a href='http://opensource.org/licenses/QPL-1.0'>Q Public License</a>.<br/>")
+        "The program released under the <a href='http://opensource.org/licenses/QPL-1.0'>Q Public License</a>.")
         .arg(versionString,
              QLatin1String(qVersion()),
              QString::number(QSysInfo::WordSize),
@@ -70,19 +73,48 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
     copyRightLabel->setWordWrap(true);
     copyRightLabel->setOpenExternalLinks(true);
     copyRightLabel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    copyRightLabel->setAlignment(Qt::AlignTop);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-    QPushButton *closeButton = buttonBox->button(QDialogButtonBox::Close);
-    //QTC_CHECK(cl  oseButton);
-    buttonBox->addButton(closeButton, QDialogButtonBox::ButtonRole(QDialogButtonBox::RejectRole | QDialogButtonBox::AcceptRole));
-    connect(buttonBox , SIGNAL(rejected()), this, SLOT(reject()));
+    QGridLayout *crypto = new QGridLayout();
+    //BTC
+    QLabel* btcL = new QLabel("BTC");
+    QFont btcLF = btcL->font();
+    btcLF.setBold(true);
+    btcL->setFont(btcLF);
+    QLineEdit* btc = new QLineEdit();
+    btc->setText(VersionDialog::BTC);
+    btc->setReadOnly(true);
+    QPushButton* btcC = new QPushButton();
+    btcC->setIcon(QIcon(":/res/images/clipboard.png"));
+
+    //LTC
+    QLabel* ltcL = new QLabel("LTC");
+    QFont ltcLF = btcL->font();
+    ltcLF.setBold(true);
+    ltcL->setFont(ltcLF);
+    QLineEdit* ltc = new QLineEdit();
+    ltc->setText(VersionDialog::LTC);
+    ltc->setReadOnly(true);
+    QPushButton* ltcC = new QPushButton();
+    ltcC->setIcon(QIcon(":/res/images/clipboard.png"));
+
+    btcL->setIndent(100);
+    ltcL->setIndent(100);
+    crypto->addWidget(btcL,0, 0);
+    crypto->addWidget(btc, 0, 1);
+    crypto->addWidget(btcC,0, 2);
+    crypto->addWidget(ltcL,1, 0);
+    crypto->addWidget(ltc, 1, 1);
+    crypto->addWidget(ltcC,1, 2);
+
+    connect(btcC, SIGNAL(clicked()), this, SLOT(copyBTC()));
+    connect(ltcC, SIGNAL(clicked()), this, SLOT(copyLTC()));
 
     QLabel *logoLabel = new QLabel;
     logoLabel->setPixmap(QPixmap(iconpath));
-    layout->addWidget(logoLabel , 0, 0, 1, 1);
-    layout->addWidget(copyRightLabel, 0, 1, 4, 4);
-    layout->addWidget(buttonBox, 4, 0, 1, 5);
-    //*/
+    layout->addWidget(logoLabel ,       0, 0, 1, 1);
+    layout->addWidget(copyRightLabel,   0, 1, 4, 6);
+    layout->addLayout(crypto,           1, 0, 1, 6);
 }
 
 #include <QTextEdit>

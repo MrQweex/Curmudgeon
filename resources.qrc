@@ -22,5 +22,6 @@
         <file>images/stop.png</file>
         <file>images/qweex.png</file>
         <file>images/muhface.jpg</file>
+        <file>images/clipboard.png</file>
     </qresource>
 </RCC>
