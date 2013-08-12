@@ -55,7 +55,7 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
 
      const QString description = tr(
         "<br/><h2>%1</h2>"
-        "Based on Qt %2 (%3-bit %4)<br/>"
+        "Based on Qt %2 (%3-bit%4)<br/>"
         "<br/>"
         "Built on %5 %6<br />"
         "<br/>"
@@ -66,15 +66,31 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
              QLatin1String(qVersion()),
              QString::number(QSysInfo::WordSize),
         #ifdef _MSC_VER
-             //QString("VS").append(_MSC_VER),
-             QString("MSVS"),
-        #elif defined __GNUC__
-            #ifdef _WIN32
-             QString("MingW ").append(
+             QString(" VS").append(
+            #if _MSC_VER < 1400
+                 ""
+              // older than VC++ 2005
+            #elif _MSC_VER < 1500
+                 "2005"
+            #elif _MSC_VER < 1600
+                 "2008"
+            #elif _MSC_VER < 1700
+                 "2010"
             #else
-             QString("GCC ").append(
+              // Future versions
+            #endif
+             ),
+        #elif defined(__GNUC__)
+            #ifdef _WIN32
+             QString(" MingW ").append(
+            #else
+             QString(" GCC ").append(
             #endif
              QString::number(__GNUC__).append(".").append(QString::number(__GNUC_MINOR__)).append(".").append(QString::number(__GNUC_PATCHLEVEL__))),
+        #elif defined(__clang__)
+             QString(" Clang ").append(
+                 QString::number(__clang_major__).append(".").append(QString::number(__clang_minor__)).append(".").append(QString::number(__clang_patchlevel__))
+                 ),
         #else
              "",
         #endif
