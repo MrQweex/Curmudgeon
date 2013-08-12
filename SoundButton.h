@@ -17,6 +17,7 @@
 #include <QSlider>
 #include <QMenu>
 #include <QInputDialog>
+#include <QMimeData>
 
 #include <iostream>
 
@@ -168,7 +169,12 @@ protected:
         //case 0x05:      //MCI_NOTIFY_FAILURE
             this->playingFinished();
         }
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
         return QGroupBox::winEvent(message,result);
+#else
+        QByteArray derp;
+        return QGroupBox::nativeEvent(derp, message, result);
+#endif
     }
 #endif
     void dragEnterEvent(QDragEnterEvent *event);

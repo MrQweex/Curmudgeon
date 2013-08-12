@@ -32,16 +32,16 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), boardVolume(100)
 
     for(int i=0; i<BUTTON_COUNT; i++)
     {
-        path = CIniFile::GetValue(std::string("path"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
+        path = CIniFile::GetValue(std::string("path"), std::string(1,ids[i].toLatin1()),ini_file_path.toStdString().c_str());
         if(path.length()>0)
         {
-            std::cout << "Loading: " << ids[i].toAscii() << " " << path << std::endl;
+            std::cout << "Loading: " << ids[i].toLatin1() << " " << path << std::endl;
 
             //TODO: parse more reliably
-            vol = atoi(CIniFile::GetValue("vol", std::string(1,ids[i].toAscii()), ini_file_path.toStdString()).c_str());
-            nick = CIniFile::GetValue(std::string("nick"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
+            vol = atoi(CIniFile::GetValue("vol", std::string(1,ids[i].toLatin1()), ini_file_path.toStdString()).c_str());
+            nick = CIniFile::GetValue(std::string("nick"), std::string(1,ids[i].toLatin1()),ini_file_path.toStdString().c_str());
 
-            temp = CIniFile::GetValue(std::string("done"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
+            temp = CIniFile::GetValue(std::string("done"), std::string(1,ids[i].toLatin1()),ini_file_path.toStdString().c_str());
             if(temp=="stop")
                 done = SoundButton::DONE_STOP;
             else if(temp=="loop")
@@ -49,7 +49,7 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), boardVolume(100)
             else
                 done = Options::defaultDoneAction;
 
-            temp = CIniFile::GetValue(std::string("released"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
+            temp = CIniFile::GetValue(std::string("released"), std::string(1,ids[i].toLatin1()),ini_file_path.toStdString().c_str());
             if(temp=="stop")
                 released = SoundButton::RELEASED_STOP;
             else if(temp=="continue")
@@ -57,7 +57,7 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), boardVolume(100)
             else
                 released = Options::defaultReleasedAction;
 
-            temp = CIniFile::GetValue(std::string("repressed"), std::string(1,ids[i].toAscii()),ini_file_path.toStdString().c_str());
+            temp = CIniFile::GetValue(std::string("repressed"), std::string(1,ids[i].toLatin1()),ini_file_path.toStdString().c_str());
             if(temp=="stop")
                 repressed = SoundButton::REPRESSED_STOP;
             else if(temp=="restart")
@@ -196,7 +196,7 @@ QString SoundBoard::getName()
 void SoundBoard::pressKey(QChar c)
 {
     for(int i=0; i<BUTTON_COUNT; i++)
-        if(c.toAscii()==ids[i].toAscii())
+        if(c.toLatin1()==ids[i].toLatin1())
         {
             buttons[i]->pressKey();
             break;
@@ -206,7 +206,7 @@ void SoundBoard::pressKey(QChar c)
 void SoundBoard::releaseKey(QChar c)
 {
     for(int i=0; i<BUTTON_COUNT; i++)
-        if(c.toAscii()==ids[i].toAscii())
+        if(c.toLatin1()==ids[i].toLatin1())
         {
             buttons[i]->releaseKey();
             break;

@@ -423,7 +423,7 @@ void SoundButton::setMedia(QString newFile)
     ((SoundBoard*)this->parentWidget())->breakVirgin();
 
 #ifdef _WIN32
-     ((AudioPlayerWin*)player)->setFinishListenerHWND(this->winId());
+     ((AudioPlayerWin*)player)->setFinishListenerHWND((HWND)this->winId());
 #endif
 }
 
@@ -437,7 +437,7 @@ void SoundButton::saveToFile()
     }
     std::cout << "FILE: " << boards_ini_file_path->toStdString() << std::endl;
 
-    const char c[] = { ID.toAscii(), '\0' };
+    const char c[] = { ID.toLatin1(), '\0' };
     if(sound_file_path.length()==0)
     {
         CIniFile::DeleteSection(std::string(c),boards_ini_file_path->toStdString());
@@ -462,7 +462,7 @@ void SoundButton::saveVolume()
         return;
     }
 
-    const char c[] = { ID.toAscii(), '\0' };
+    const char c[] = { ID.toLatin1(), '\0' };
     CIniFile::SetValue("vol",
                        QString("%1").arg(this->volume_level).toStdString(),
                        std::string(c),
@@ -477,7 +477,7 @@ void SoundButton::saveNickname()
         return;
     }
 
-    const char c[] = { ID.toAscii(), '\0' };
+    const char c[] = { ID.toLatin1(), '\0' };
     if(nickname.length()>0)
         CIniFile::SetValue("nick",
                            nickname.toStdString(),
@@ -497,7 +497,7 @@ void SoundButton::saveDoneAction()
         return;
     }
 
-    const char c[] = { ID.toAscii(), '\0' };
+    const char c[] = { ID.toLatin1(), '\0' };
     std::string out;
     switch(doneAction)
     {
@@ -522,7 +522,7 @@ void SoundButton::saveReleaseAction()
         return;
     }
 
-    const char c[] = { ID.toAscii(), '\0' };
+    const char c[] = { ID.toLatin1(), '\0' };
     std::string out;
     switch(releasedAction)
     {
@@ -547,7 +547,7 @@ void SoundButton::saveRepressAction()
         return;
     }
 
-    const char c[] = { ID.toAscii(), '\0' };
+    const char c[] = { ID.toLatin1(), '\0' };
     std::string out;
     switch(repressedAction)
     {
