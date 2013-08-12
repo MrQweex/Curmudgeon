@@ -77,6 +77,7 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
             #elif _MSC_VER < 1700
                  "2010"
             #else
+                 "9001"
               // Future versions
             #endif
              ),
