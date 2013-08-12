@@ -66,8 +66,8 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
              QLatin1String(qVersion()),
              QString::number(QSysInfo::WordSize),
         #ifdef _MSC_VER
+             //QString("VS").append(_MSC_VER),
              QString("MSVS"),
-             //_MSC_VER,
         #elif defined __GNUC__
             #ifdef _WIN32
              QString("MingW ").append(
