@@ -18,7 +18,8 @@ class SoundBoard : public QWidget{
     Q_OBJECT
 
 public:
-    static const int BUTTON_COUNT = 8*3;
+    static const int BUTTON_ROW_SIZE = 10;
+    static const int BUTTON_COUNT = BUTTON_ROW_SIZE*4;
     static const QChar ids[BUTTON_COUNT];
 
 private:

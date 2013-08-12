@@ -1,8 +1,9 @@
 #include "SoundBoard.h"
 
-const QChar SoundBoard::ids[BUTTON_COUNT] = {'1','2','3','4','5','6','7','8',
-                               'A','S','D','F','G','H','J','K',
-                               'Z','X','C','V','B','N','M',','};
+const QChar SoundBoard::ids[BUTTON_COUNT] = {'1','2','3','4','5','6','7','8','9','0',
+                                             'Q','W','E','R','T','Y','U','I','O','P',
+                                             'A','S','D','F','G','H','J','K','L',';',
+                                             'Z','X','C','V','B','N','M',',','.','/'};
 
 //
 SoundBoard::SoundBoard() : name("New Soundboard"), virgin(true), boardVolume(100)
@@ -12,7 +13,7 @@ SoundBoard::SoundBoard() : name("New Soundboard"), virgin(true), boardVolume(100
     {
         buttons[i] = new SoundButton(this, NULL,
                                      &boardVolume, ids[i], Options::defaultDoneAction, Options::defaultReleasedAction, Options::defaultRepressedAction);
-        grid->addWidget(buttons[i],i/8,i%8);
+        grid->addWidget(buttons[i],i/BUTTON_ROW_SIZE,i%BUTTON_ROW_SIZE);
     }
     initLower();
 }
@@ -79,7 +80,7 @@ SoundBoard::SoundBoard(QString pathToIniFile) : virgin(false), boardVolume(100)
 void SoundBoard::init()
 {
     grid = new QGridLayout();
-    grid->setSpacing(20);
+    grid->setSpacing(5);
     grid->setMargin(10);
     this->setLayout(grid);
 }

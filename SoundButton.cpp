@@ -197,6 +197,7 @@ void SoundButton::init()
 
 void SoundButton::destroy()
 {
+    this->stop();
     this->setStyleSheet("background-color: #" + CLR_DISABLED);
     name->setText(tr(""));
     volume->setEnabled(false);
@@ -215,6 +216,7 @@ void SoundButton::rename()
     if(!ok)
         return;
     nickname = newname;
+    std::cout << "Renaming: " << nickname.toStdString() << std::endl;
     name->setText(nickname);
     saveNickname();
 }

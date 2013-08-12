@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>938</width>
-    <height>417</height>
+    <width>1228</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,8 +25,8 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>941</width>
-      <height>371</height>
+      <width>1231</width>
+      <height>421</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -60,8 +60,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>938</width>
-     <height>22</height>
+     <width>1228</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>

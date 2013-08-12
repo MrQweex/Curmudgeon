@@ -25,15 +25,12 @@ private:
         {
             // Find the maximum width of characters that can fit on the line
             w = 0;
-            std::cout << "  width starts at " << currentChar << std::endl;
             while(w<maxWidth && currentChar<ename.length())
             {
                 currentChar++;
                 w+=metrics.width(ename[currentChar]);
             }
             w-=metrics.width(ename[currentChar--]);   // We went over by 1, so subtract
-            std::cout << "c=" << currentChar << " w=" << w << std::endl;
-            std::cout << ename.mid(lastX+1, currentChar).toStdString() << std::endl;
 
             if(currentChar>=ename.length()-1)
                 break;
