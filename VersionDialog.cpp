@@ -55,16 +55,29 @@ VersionDialog::VersionDialog(QWidget *parent) : QDialog(parent)
 
      const QString description = tr(
         "<br/><h2>%1</h2>"
-        "Based on Qt %2 (%3-bit)<br/>"
+        "Based on Qt %2 (%3-bit %4)<br/>"
         "<br/>"
-        "Built on %4 %5<br />"
+        "Built on %5 %6<br />"
         "<br/>"
-        "Copyright 2013-%6 %7. All rights reserved.<br/>"
+        "Copyright 2013-%7 %8. All rights reserved.<br/>"
         "<br/>"
-        "The program released under the <a href='http://opensource.org/licenses/QPL-1.0'>Q Public License</a>.")
+        "This program is released under the <a href='http://opensource.org/licenses/QPL-1.0'>Q Public License</a>.")
         .arg(versionString,
              QLatin1String(qVersion()),
              QString::number(QSysInfo::WordSize),
+        #ifdef _MSC_VER
+             QString("MSVS"),
+             //_MSC_VER,
+        #elif defined __GNUC__
+            #ifdef _WIN32
+             QString("MingW ").append(
+            #else
+             QString("GCC ").append(
+            #endif
+             QString::number(__GNUC__).append(".").append(QString::number(__GNUC_MINOR__)).append(".").append(QString::number(__GNUC_PATCHLEVEL__))),
+        #else
+             "",
+        #endif
              QLatin1String(__DATE__), QLatin1String(__TIME__),
              copyrightYear,
              copyrightHolder);
