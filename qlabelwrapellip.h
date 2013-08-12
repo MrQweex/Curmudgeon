@@ -28,7 +28,8 @@ private:
             while(w<maxWidth && currentChar<ename.length())
             {
                 currentChar++;
-                w+=metrics.width(ename[currentChar]);
+                if(ename[currentChar].toLatin1()!=' ')
+                    w+=metrics.width(ename[currentChar]);
             }
             w-=metrics.width(ename[currentChar--]);   // We went over by 1, so subtract
 

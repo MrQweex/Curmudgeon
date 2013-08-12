@@ -93,6 +93,7 @@ void SoundBoard::initLower()
     g->setRowStretch(0,1);
     g->setRowStretch(1,1);
     g->setContentsMargins(60,0,60,0);
+    g->setMargin(10);
 
     //Stop
     QPushButton* stahp = new QPushButton();
@@ -143,7 +144,7 @@ void SoundBoard::initLower()
 
 
     lower->setLayout(g);
-    grid->addWidget(lower,BUTTON_COUNT/8+1,0,1,8);
+    grid->addWidget(lower,BUTTON_COUNT/BUTTON_ROW_SIZE+1,0,1,BUTTON_ROW_SIZE);
 }
 
 void SoundBoard::trackVolume(int i)
